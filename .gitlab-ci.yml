@@ -1,0 +1,31 @@
+# stages: 
+#     - build
+#     - deploy
+
+# build:
+#     stage: build
+#     image: node:12-alpine
+#     script:
+#         - npm install
+#         - npm run build
+
+# deploy-dev: 
+#     image: ruby:latest
+#     stage: deploy
+#     before_script: 
+#         - gem install dpl
+#     script:
+#         - dpl --provider=heroku --app=$HEROKU_APP_NAME_DEV --api-key=$HEROKU_API_KEY
+#     only:
+#         - develop
+
+# deploy-prod: 
+#     image: ruby:latest
+#     stage: deploy
+#     before_script: 
+#         - gem install dpl
+#     script:
+#         - dpl --provider=heroku --app=$HEROKU_APP_NAME_DEV --api-key=$HEROKU_API_KEY
+#     only:
+#         - master
+#     when: manual
