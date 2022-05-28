@@ -4,8 +4,6 @@ import * as dotenv from 'dotenv';
 import { Users } from '../models/users';
 dotenv.config();
 
-console.log(process.env.DATABASE_URL);
-
 export const AppDataSource = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/postgres',
