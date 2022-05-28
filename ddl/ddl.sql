@@ -4,9 +4,11 @@
 --     quantity integer
 -- );
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 /** User untuk login maupun session */
 CREATE TABLE Users (
-  user_id text unique PRIMARY KEY,
+  user_id uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   full_name varchar(50) not null,
   phone varchar(13) not null,
   email text unique not null,
@@ -23,7 +25,7 @@ CREATE TYPE status_account_bank AS ENUM ('INVALID_ACCOUNT_NUMBER', 'PENDING', 'S
   * Masih bingung account bank ini di user atau di tiap organizer
  */
 CREATE TABLE account_bank (
-  "account_bank_id" text unique PRIMARY KEY,
+  "account_bank_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" text unique not null,
   "bank_code" varchar(5) unique not null,
   "bank_account_number" varchar(16) not null,
@@ -38,7 +40,7 @@ CREATE TABLE account_bank (
 
 /** Tabel master bank yg di support */
 CREATE TABLE master_bank (
-  "bank_id" text PRIMARY KEY,
+  "bank_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "bank_code" varchar(5) not null,
   "bank_name" varchar(50) not null,
   "is_active" boolean default false,
@@ -50,8 +52,8 @@ CREATE TABLE master_bank (
 
 CREATE TYPE mutation_type AS ENUM ('IN', 'OUT'); -- dev
 
-CREATE TABLE UserMutationBalance (
-  "mutation_id" text PRIMARY KEY,
+CREATE TABLE user_mutation_balance (
+  "mutation_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" text not null,
   "amount" int not null,
   "balance" bigint not null,
@@ -65,7 +67,7 @@ CREATE TABLE UserMutationBalance (
 
 /** Status Verification User */
 CREATE TABLE status_verification (
-  "status_verification_id" text PRIMARY KEY,
+  "status_verification_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "status_name" varchar(25) not null,
 	"created_at" timestamp NOT NULL,
 	"created_by" text default NULL,
@@ -80,7 +82,7 @@ CREATE TYPE gender AS ENUM ('MAN', 'WOMEN'); -- dev
   * diwajibkan untuk melengkapi biodata
  */
 CREATE TABLE user_personal (
-  "user_personal_id" text PRIMARY KEY,
+  "user_personal_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" text not null,
   "photo" text default 'default_picture.png',
   "gender" Gender default null,
@@ -96,7 +98,7 @@ CREATE TABLE user_personal (
 
 /** Untuk crud tiap user bisa memiliki nama whistlist sesuai yang diinginkan */
 CREATE TABLE user_whislist (
-  "user_whislist_id" text PRIMARY KEY,
+  "user_whislist_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" text not null,
   "whistlist_name" varchar(15) not null,
   "description" varchar(50) not null,
@@ -108,7 +110,7 @@ CREATE TABLE user_whislist (
 
 /** Item item yang dimasukkan whistlist ke dalam tiap kategori */
 CREATE TABLE user_whislist_item (
-  "user_whistlist_item_id" text PRIMARY KEY,
+  "user_whistlist_item_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_whislist_id" text not null,
   "event_id" text not null,
 	"created_at" timestamp NOT NULL,
@@ -119,7 +121,7 @@ CREATE TABLE user_whislist_item (
 
 /** Level competition yang di support */
 CREATE TABLE leve_competition (
-  "level_competition_id" text PRIMARY KEY,
+  "level_competition_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "level_competition_name" varchar(25) not null,
   "description" text default null,
 	"created_at" timestamp NOT NULL,
@@ -136,7 +138,7 @@ CREATE TYPE template_certificate_type AS ENUM ('DEFAULT', 'CUSTOM', 'OUTSIDE_APP
   * dan sub event yang di support
  */
 CREATE TABLE Event (
-  "event_id" text PRIMARY KEY,
+  "event_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" text not null,
   "organizer_id" text not null,
   "event_category_id" text not null,
@@ -160,7 +162,7 @@ CREATE TABLE Event (
 
 /** Settingan untuk event lomba dll */
 CREATE TABLE event_setting (
-  "event_setting_id" text PRIMARY KEY,
+  "event_setting_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null,
   "has_timeline" boolean default false,
   "timeline_description" text default null,
@@ -176,7 +178,7 @@ CREATE TABLE event_setting (
 
 /** Event Categories yg di support */
 CREATE TABLE event_categories (
-  "event_category_id" text PRIMARY KEY,
+  "event_category_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "category_name" varchar(50) not null,
   "logo" text not null,
   "description" text not null,
@@ -188,7 +190,7 @@ CREATE TABLE event_categories (
 
 /** URI apaibla event itu online untuk bisa langsung redirect  */
 CREATE TABLE url_event_online (
-  "url_id" text PRIMARY KEY,
+  "url_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null,
   "link_address" text not null,
 	"created_at" timestamp NOT NULL,
@@ -203,7 +205,7 @@ CREATE TYPE status_pricelist AS ENUM ('ACTIVE', 'INACTIVE','SOLD', 'EXPIRED');--
   * dikarenakan untuk menunjang event konser dll
  */
 CREATE TABLE pricelist_event (
-  "pricelist_event_id" text PRIMARY KEY,
+  "pricelist_event_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null,
   "pricelist_name" varchar(16) not null,
   "quota" int not null,
@@ -224,7 +226,7 @@ CREATE TYPE timeline_label AS ENUM ('INFORMATION', 'URL_LINK', 'QUALIFICATION', 
 
 /** Timeline event apabila event di setting has_timeline = true */
 CREATE TABLE event_timeline (
-  "event_timeline_id" text PRIMARY KEY,
+  "event_timeline_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null,
   "timeline_number" smallint not null,
   "timeline_name" varchar(25) not null,
@@ -245,7 +247,7 @@ CREATE TYPE address_type AS ENUM ('USER', 'ORGANIZER','EVENT'); -- dev
 
 /** Address untuk tiap role (USER,ORGANIZER,EVENT) */
 CREATE TABLE Address (
-  "address_id" text PRIMARY KEY,
+  "address_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "address_type" address_type not null,
   "owner_id" text default null,
   "city" varchar(25) default null,
@@ -266,7 +268,7 @@ CREATE TYPE status_organizer AS ENUM ('ACTIVE', 'INACTIVE','PENDING','BLOCKED','
 
 /** Tabel organizer yang digunakan untuk menampung sleuruh data organizer */
 CREATE TABLE Organizer (
-  "organizer_id" text PRIMARY KEY,
+  "organizer_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" text not null,
   "organizer_name" varchar(50) not null,
   "slug" varchar(255) not null,
@@ -286,7 +288,7 @@ CREATE TABLE Organizer (
 
 /** Event document merupakan dokumen penunjang lomba yang ditampilkan kepada user */
 CREATE TABLE event_document (
-  "event_document_id" text PRIMARY KEY,
+  "event_document_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null,
   "document_name" varchar(50) not null,
   "description" varchar(255) not null,
@@ -305,7 +307,7 @@ CREATE TYPE statsu_organizer_data AS ENUM ('PENDING', 'REVIEW', 'APPROVED','REJE
   * Setiap organizer diwajibkan untuk mengupload dokumen
  */
 CREATE TABLE organizer_data (
-  "organizer_data_id" text PRIMARY KEY,
+  "organizer_data_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "organizer_id" text not null,
   "organizer_data_type" organizer_data_type not null,
   "full_name" varchar(50) not null,
@@ -321,7 +323,7 @@ CREATE TABLE organizer_data (
 
 /** Belum tau untuk apa */
 CREATE TABLE participant_event (
-  "participant_event_id" text PRIMARY KEY,
+  "participant_event_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null,
   "label" varchar(50) not null,
 	"created_at" timestamp NOT NULL,
@@ -335,7 +337,7 @@ CREATE TYPE banner_status AS ENUM ('WILL_COME','ON_GOING','ACTIVE','INACTIVE','E
 
 /** Banner untuk ditampilkan ke user */
 CREATE TABLE banner_master (
-  "banner_id" text PRIMARY KEY,
+  "banner_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "banner_name" text not null,
   "position" banner_position not null,
   "file_addres" text not null,
@@ -351,7 +353,7 @@ CREATE TABLE banner_master (
 
 /** Table untuk menampung data transaksi */
 CREATE TABLE transaction (
-  "transaction_id" text PRIMARY KEY,
+  "transaction_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "ref_number" text unique not null,
   "event_id" text not null,
   "user_id" text not null,
@@ -380,7 +382,7 @@ CREATE TABLE Status (
 
 /** Tabel untuk menampung seluruh Reason  */
 CREATE TABLE reason (
-  "reason_id" text PRIMARY KEY,
+  "reason_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "reason" varchar(25) not null,
 	"created_at" timestamp NOT NULL,
 	"created_by" text default NULL,
@@ -390,7 +392,7 @@ CREATE TABLE reason (
 
 /** Tabel untuk menampung master team / kelompok di tiap lomba yang is_team = true  */
 CREATE TABLE master_team (
-  "master_team_id" text PRIMARY KEY,
+  "master_team_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_event_id" text not null, 
   "event_id" text not null, 
   "team_name" varchar(25) not null, 
@@ -404,7 +406,7 @@ CREATE TYPE status_team_member AS ENUM ('PENDING', 'APPROVED','REJECTED'); -- de
 
 /** Tabel untuk menampung seluruh anggota dari master team  */
 CREATE TABLE team_member (
-  "team_member_id" text PRIMARY KEY,
+  "team_member_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" text not null, 
   "master_team_id" text not null, 
   "is_captain" boolean default false, 
@@ -417,7 +419,7 @@ CREATE TABLE team_member (
 
 /** Tabel untuk menampung team yang lolos di tiap timeline  */
 CREATE TABLE team_qualified (
-  "team_qualified_id" text PRIMARY KEY,
+  "team_qualified_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "master_team_id" text not null, 
   "event_timeline_id" text not null, 
   "event_id" text not null, 
@@ -434,7 +436,7 @@ CREATE TABLE team_qualified (
   * bakal bisa untuk view lomba yang diikuti
   */
 CREATE TABLE user_event (
-  "user_event_id" text PRIMARY KEY,
+  "user_event_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "user_id" text not null, 
   "event_id" text not null, 
   "category_id" text not null, 
@@ -446,7 +448,7 @@ CREATE TABLE user_event (
 
 /** Mentor event is optional  */
 CREATE TABLE mentor_event (
-  "mentor_event_id" text PRIMARY KEY,
+  "mentor_event_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "full_name" varchar(50) not null, 
   "email" varchar(50) not null, 
   "agency" varchar(50) not null, 
@@ -460,7 +462,7 @@ CREATE TYPE input_type_field AS ENUM ('TEXT', 'TEXTAREA', 'UPLOAD'); -- dev
 
 /** Form yang di input organizer data yang dibutuhkan untuk penilaian  */
 CREATE TABLE field_submit_event (
-  "field_submit_event_id" text PRIMARY KEY,
+  "field_submit_event_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null, 
   "event_timeline_id" text not null, 
   "label" varchar(25) not null, 
@@ -473,7 +475,7 @@ CREATE TABLE field_submit_event (
 
 /** Data yang disubmit peserta di tiap field  */
 CREATE TABLE submited_data_event (
-  "field_submit_competition_id" text PRIMARY KEY,
+  "field_submit_competition_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "field_submit_event_id" text not null, 
   "point" varchar(4) not null, 
   "master_team_id" text not null, 
@@ -487,7 +489,7 @@ CREATE TABLE submited_data_event (
 
 /** Tabel untuk validasi dan entry event offline  */
 CREATE TABLE offline_entry (
-  "offline_entry_id" text PRIMARY KEY,
+  "offline_entry_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null, 
   "event_timeline_id" text not null, 
   "entry_key" text not null,
@@ -501,7 +503,7 @@ CREATE TABLE offline_entry (
 
 /** Tabel master certificate dari organizer  */
 CREATE TABLE template_certificate_event (
-  "template_certificate_event_id" text PRIMARY KEY,
+  "template_certificate_event_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_id" text not null, 
   "organizer_id" text not null, 
   "url_template" text not null,
@@ -513,7 +515,7 @@ CREATE TABLE template_certificate_event (
 
 /** Certificate yang di share ke peserta lomba  */
 CREATE TABLE certificate_participant (
-  "certificate_participant_id" text PRIMARY KEY,
+  "certificate_participant_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "template_certificate_id" text not null, 
   "user_id" text not null, 
   "master_team_id" text not null,
@@ -529,7 +531,7 @@ CREATE TABLE certificate_participant (
 
 /** PointCategoryEvent */
 CREATE TABLE point_category_event (
-  "point_category_event_id" text PRIMARY KEY,
+  "point_category_event_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "category_name" text not null, 
   "min_point" varchar(4) not null, 
   "max_point" varchar(4) not null, 
@@ -541,7 +543,7 @@ CREATE TABLE point_category_event (
 
 /** Teampoint */
 CREATE TABLE team_point (
-  "team_point_id" text PRIMARY KEY,
+  "team_point_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
   "event_timeline_id" text not null, 
   "master_team_id" text not null, 
   "point_category_event_id" text not null, 

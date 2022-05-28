@@ -1,27 +1,30 @@
 import express, { Response } from 'express';
-import { Users } from '../models/users';
 const router = express.Router();
 
-/* Route Release. */
-router.get('/', (_, res: Response) => {
-  res.send('API With Express and Node + TS');
-});
+/* Import routes. */
+import userRouter from './user';
 
-router.get('/author', (_, res: Response, __) => {
-  res.json({
+/* Route Release. */
+router.use('/users', userRouter);
+
+router.get('/liveness', (_, res: Response) => {
+  res.status(200).json({
     message: 'Success',
-    response: {
-      nama: 'Ghalmas Shanditya Putra Agung',
-      address: 'Tangerang Selatan, Banten, Indonesia',
-      database: process.env.DATABASE_URL,
+    data: {
+      status: 'OK',
+      time: new Date(),
     },
   });
 });
 
-router.get('/test', async (_, res: Response) => {
-  const getData = await Users.createQueryBuilder('users').getMany();
-
-  res.json(getData);
+router.get('/', (_, res: Response) => {
+  res.status(200).json({
+    message: 'Success',
+    data: {
+      nama: 'Ghalmas Shanditya Putra Agung',
+      address: 'Tangerang Selatan, Banten, Indonesia',
+    },
+  });
 });
 
 export default router;

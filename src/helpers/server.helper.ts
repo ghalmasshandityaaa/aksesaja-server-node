@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+import { Response, Request, NextFunction } from 'express';
 dotenv.config();
 
 export function normalizePort(value: string) {
@@ -40,5 +41,26 @@ export function onError(error: any) {
       break;
     default:
       throw error;
+  }
+}
+
+export function error404(_: Request, res: Response, next: NextFunction) {
+  res.status(404).json({
+    status: 404,
+    message: 'Not Found',
+  });
+  next();
+}
+
+export function logErrors(err: any, _: Request, __: Response, next: NextFunction) {
+  console.error(err.stack);
+  next(err);
+}
+
+export function clientErrorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+  if (req.xhr) {
+    res.status(500).send({ error: 'Something failed!' });
+  } else {
+    next(err);
   }
 }
