@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import { Users } from '../models/users';
 dotenv.config();
 
-export const AppDataSource = new DataSource({
+export const Connection = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/postgres',
   synchronize: false,

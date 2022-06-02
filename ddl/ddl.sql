@@ -19,6 +19,10 @@ CREATE TABLE Users (
 	"updated_by" text default NULL
 ); -- dev
 
+alter table users alter column full_name set default null; -- dev
+alter table users alter column phone set default null; -- dev
+alter table users alter column password set default null; -- dev
+
 CREATE TYPE status_account_bank AS ENUM ('INVALID_ACCOUNT_NUMBER', 'PENDING', 'SUCCESS'); -- dev
 
 /** Account bank untuk organizer
@@ -548,6 +552,18 @@ CREATE TABLE team_point (
   "master_team_id" text not null, 
   "point_category_event_id" text not null, 
   "point" varchar(4) not null, 
+	"created_at" timestamp NOT NULL,
+	"created_by" text default NULL,
+	"updated_at" timestamp default NULL,
+	"updated_by" text default NULL
+); -- dev
+
+CREATE TABLE user_verification_code (
+  "user_verification_code_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "verification_code" varchar(6) not null,
+  "email" varchar(50) not null,
+  "retry" int default 0,
+  "expired_date" timestamp not null,
 	"created_at" timestamp NOT NULL,
 	"created_by" text default NULL,
 	"updated_at" timestamp default NULL,

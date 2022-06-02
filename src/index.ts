@@ -5,7 +5,7 @@ import logger from 'morgan';
 import path from 'path';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
-import { AppDataSource } from './config/db.config';
+import { Connection } from './config/db.config';
 import { onError, error404, clientErrorHandler, logErrors } from './helpers/server.helper';
 dotenv.config();
 
@@ -14,7 +14,7 @@ const PORT: number = Number(process.env.PORT) || 5000;
 const HOST: string = process.env.APP_HOST || '0.0.0.0';
 
 /** Initialize database */
-AppDataSource.initialize()
+Connection.initialize()
   .then(() => console.log('Database connected!'))
   .catch((error) => console.log({ message: 'Database connection failed!', error: error.message }));
 

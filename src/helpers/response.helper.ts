@@ -11,9 +11,9 @@ export class Response {
   }
 }
 
-export const response = (message: string, data: any) => {
-  new Response(message, data);
-};
+// export const response = (message: string, data: any) => {
+//   new Response(message, data);
+// };
 
 export const responsePage = (results: any[], total: number, paginationOptions: PaginationOptions) => {
   return new Pagination(results, total, paginationOptions);

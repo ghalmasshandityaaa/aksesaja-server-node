@@ -14,7 +14,7 @@
 import { Users } from '../models/users';
 
 export class UserService {
-  constructor() { } // private readonly companyService: CompanyService,
+  constructor() {} // private readonly companyService: CompanyService,
 
   static async getAllUsers() {
     try {
