@@ -20,7 +20,7 @@ import { VerifyActivationCode } from '../interfaces/auth.interface';
 import { UserVerificationCode } from '../models/user-verification-code';
 
 export class AuthService {
-  constructor() {} // private readonly companyService: CompanyService,
+  constructor() { } // private readonly companyService: CompanyService,
 
   static async signIn(params: SignIn) {
     try {
@@ -34,6 +34,8 @@ export class AuthService {
         throw Error('Sorry your password is wrong');
       } else if (!getUsers.isActive) {
         throw Error('Sorry your account is not activated');
+      } else if (!getUsers.password) {
+        return { result: 'Password is null', code: 204 };
       }
 
       return { result: getUsers, code: 200 };
@@ -55,7 +57,7 @@ export class AuthService {
       }
 
       const datatemp = {
-        activationCode: generateRandomNumber(6),
+        verificationCode: generateRandomNumber(6),
         email: params.email,
         retry: 0,
         expiredDate: moment().add(1, 'days').format('YYYY-MM-DD HH:mm:ss'),
@@ -65,7 +67,7 @@ export class AuthService {
 
       await Connection.createQueryBuilder().insert().into(UserVerificationCode).values(datatemp).execute();
 
-      return { result: null, code: 200 };
+      return { result: null, code: 201 };
     } catch (e) {
       console.error({ service: 'AuthService.signUp', message: e.message, stack: e.stack });
       throw e;
@@ -104,18 +106,19 @@ export class AuthService {
         }
       } else if (getUserVerificationCode.verificationCode === params.activationCode) {
         await Connection.createQueryBuilder()
-          .delete()
-          .from(UserVerificationCode)
-          .where('email = :email', { email: params.email })
-          .execute();
-
-        await Connection.createQueryBuilder()
           .insert()
           .into(Users)
           .values({
             email: params.email,
+            isActive: true,
             createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
           })
+          .execute();
+
+        await Connection.createQueryBuilder()
+          .delete()
+          .from(UserVerificationCode)
+          .where('email = :email', { email: params.email })
           .execute();
       }
 

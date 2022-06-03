@@ -9,10 +9,10 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 /** User untuk login maupun session */
 CREATE TABLE Users (
   user_id uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
-  full_name varchar(50) not null,
-  phone varchar(13) not null,
+  full_name varchar(50) default null,
+  phone varchar(13) default null,
   email text unique not null,
-  password text not null,
+  password text default null,
   is_active boolean default false,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp default NULL,
