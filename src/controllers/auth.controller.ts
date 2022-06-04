@@ -31,7 +31,7 @@ export class AuthController {
 
   static async checkAvailabilityEmail(req: Request, res: Response) {
     const email: string = req.body.email;
-    const APP_MODE = await Config.get('APP_MODE');
+    const APP_MODE = Config.get('APP_MODE');
     try {
       if (!email) throw Error('Email is empty');
       const { result, code } = await AuthService.checkAvailabilityEmail(email);
@@ -85,6 +85,7 @@ export class AuthController {
   static async verifyActivationCode(req: Request, res: Response) {
     const email: string = req.cookies.email;
     const activationCode: string = req.body.activationCode;
+    const APP_MODE = Config.get('APP_MODE');
     try {
       if (!email) throw Error('Email or Password is empty');
       else if (!activationCode) throw Error('Activation Code is empty');
@@ -99,7 +100,7 @@ export class AuthController {
           });
       } else {
         res.status(code)
-          .cookie('email', email, { httpOnly: true, secure: true })
+          .cookie('email', email, { httpOnly: true, secure: APP_MODE !== 'development' })
           .json({
             message: 'Success',
             data: result,
