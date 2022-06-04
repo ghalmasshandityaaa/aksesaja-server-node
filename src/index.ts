@@ -1,6 +1,6 @@
 /** Import dependencies */
 import cookieParser from 'cookie-parser';
-import express, { Express } from 'express';
+import express, { Express, NextFunction } from 'express';
 import logger from 'morgan';
 import path from 'path';
 import cors from 'cors';
@@ -25,6 +25,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+function encryptResponseInterceptor(_: any, res: any, next: NextFunction) {
+  const originalSend = res.send;
+
+  res.send = () => {
+    arguments[0] = encryptResponse(arguments[0]);
+    originalSend.apply(res, arguments);
+  };
+  next();
+}
+
+function encryptResponse(originalData: any) {
+  // place your encryption logic here, I'm just adding a string in this example
+  return originalData;
+}
+app.use(encryptResponseInterceptor);
 
 /** Router Import */
 import indexRouter from './routes/index';
