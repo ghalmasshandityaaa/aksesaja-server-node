@@ -4,11 +4,6 @@ export interface SignIn {
 }
 
 export interface SignUp {
-  email: string;
+  fullName: string;
   password: string;
-}
-
-export interface VerifyActivationCode {
-  email: string;
-  activationCode: string;
 }

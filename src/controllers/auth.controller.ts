@@ -1,25 +1,7 @@
 import { Response, Request } from 'express';
-
-/**
- * Where to import Services
- */
 import { AuthService } from '../services/auth.service';
-
-/**
- * Where to import Helpers
- */
-// const responseHelper = require('../helpers/response.helper');
-
-/**
- * Where to import Interfaces
- */
-import { SignIn, SignUp, VerifyActivationCode } from '~/interfaces/auth.interface';
+import { SignIn, SignUp } from '~/interfaces/auth.interface';
 import { textDecrypt, textEncrypt } from '../helpers/helper';
-
-/**
- * Where to import Schema
- */
-// const ProductSchema = require('../schema/product.schema');
 
 export class AuthController {
   constructor() { }
@@ -31,7 +13,7 @@ export class AuthController {
       const { result, code } = await AuthService.signIn(params);
 
       if (code === 200) {
-        res.status(code).cookie('loginData', result).json({
+        res.status(code).json({
           message: 'Success',
           data: result,
         });
@@ -46,11 +28,40 @@ export class AuthController {
     }
   }
 
+  static async checkAvailabilityEmail(req: Request, res: Response) {
+    const email: string = req.body.email;
+    try {
+      if (!email) throw Error('Email or Password is empty');
+      const { result, code } = await AuthService.checkAvailabilityEmail(email);
+
+      if (code !== 200) {
+        res.status(code).json({
+          message: 'Error',
+          error: result,
+        });
+      } else {
+        res.status(code)
+          .cookie('email', email, { httpOnly: true, secure: true })
+          .json({
+            message: 'Success',
+            data: result,
+          });
+      }
+    } catch (e) {
+      console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
+
   static async signUp(req: Request, res: Response) {
     const params: SignUp = req.body;
+    const email: string = req.cookies.email;
     try {
-      if (!params.email) throw Error('Email or Password is empty');
-      const { result, code } = await AuthService.signUp(params);
+      if (!email) throw Error('Email is empty');
+      else if (!params.password) throw Error('required');
+      else if (!params.fullName) throw Error('fullName is required');
+
+      const { result, code } = await AuthService.signUp(params, email);
 
       if (code !== 201) {
         res.status(code).json({
@@ -58,7 +69,7 @@ export class AuthController {
           error: result,
         });
       } else {
-        res.status(code).cookie('email-from-cookie', params.email).json({
+        res.status(code).json({
           message: 'Success',
           data: result,
         });
@@ -70,23 +81,27 @@ export class AuthController {
   }
 
   static async verifyActivationCode(req: Request, res: Response) {
-    const params: VerifyActivationCode = req.body;
+    const email: string = req.cookies.email;
+    const activationCode: string = req.body.activationCode;
     try {
-      if (!params.email) throw Error('Email or Password is empty');
-      else if (!params.activationCode) throw Error('Activation Code is empty');
+      if (!email) throw Error('Email or Password is empty');
+      else if (!activationCode) throw Error('Activation Code is empty');
 
-      const { result, code } = await AuthService.verifyActivationCode(params);
+      const { result, code } = await AuthService.verifyActivationCode(email, activationCode);
 
       if (code !== 200) {
-        res.status(code).json({
-          message: 'Error',
-          error: result,
-        });
+        res.status(code)
+          .json({
+            message: 'Error',
+            error: result,
+          });
       } else {
-        res.status(code).json({
-          message: 'Success',
-          data: result,
-        });
+        res.status(code)
+          .cookie('email', email, { httpOnly: true, secure: true })
+          .json({
+            message: 'Success',
+            data: result,
+          });
       }
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });

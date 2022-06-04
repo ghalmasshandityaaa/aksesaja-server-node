@@ -1,4 +1,4 @@
-export module HttpResponse {
+export namespace HttpResponse {
   export enum Informational {
     Continue = 100,
     SwitchingProtocols = 101,
