@@ -107,6 +107,14 @@ export class AuthService {
       if (checkEmail) return { result: 'Email is registered', code: 409 };
 
       /** Generate activation code, Begin */
+      /** Delete existing activation code */
+      await Connection
+        .createQueryBuilder()
+        .delete()
+        .from(UserVerificationCode)
+        .where('email = :email', { email })
+        .execute();
+
       const datatemp = {
         verificationCode: generateRandomNumber(6),
         email,
