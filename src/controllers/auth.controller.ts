@@ -14,6 +14,7 @@ import { AuthService } from '../services/auth.service';
  * Where to import Interfaces
  */
 import { SignIn, SignUp, VerifyActivationCode } from '~/interfaces/auth.interface';
+import { textDecrypt, textEncrypt } from '../helpers/helper';
 
 /**
  * Where to import Schema
@@ -21,7 +22,7 @@ import { SignIn, SignUp, VerifyActivationCode } from '~/interfaces/auth.interfac
 // const ProductSchema = require('../schema/product.schema');
 
 export class AuthController {
-  constructor() {}
+  constructor() { }
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -29,10 +30,16 @@ export class AuthController {
       if (!params.email || !params.password) throw Error('Email or Password is empty');
       const { result, code } = await AuthService.signIn(params);
 
-      res.status(code).json({
-        message: 'Success',
-        data: result,
-      });
+      if (code === 200) {
+        res.status(code).cookie('loginData', result).json({
+          message: 'Success',
+          data: result,
+        });
+      } else {
+        res.status(code).json({
+          message: result,
+        });
+      }
     } catch (e) {
       console.error({ service: 'AuthController.signIn', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -45,7 +52,7 @@ export class AuthController {
       if (!params.email) throw Error('Email or Password is empty');
       const { result, code } = await AuthService.signUp(params);
 
-      if (code !== 200) {
+      if (code !== 201) {
         res.status(code).json({
           message: 'Error',
           error: result,
@@ -83,6 +90,38 @@ export class AuthController {
       }
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
+
+  static async encrypt(req: Request, res: Response) {
+    const params: { text: string } = req.body;
+    try {
+
+      const encrypt = textEncrypt(params.text);
+
+      res.status(200).json({
+        message: 'Success',
+        encrypted: encrypt,
+      })
+    } catch (e) {
+      console.error({ service: 'AuthController.encrypt', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
+
+  static async decrypt(req: Request, res: Response) {
+    const params: { text: string } = req.body;
+    try {
+
+      const decrypt = textDecrypt(params.text);
+
+      res.status(200).json({
+        message: 'Success',
+        decrypted: decrypt,
+      })
+    } catch (e) {
+      console.error({ service: 'AuthController.decrypt', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
     }
   }

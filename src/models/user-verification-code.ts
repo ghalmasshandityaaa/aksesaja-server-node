@@ -1,6 +1,6 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('UserVerificationCode')
+@Entity('user_verification_code')
 export class UserVerificationCode extends BaseEntity {
   @PrimaryGeneratedColumn('uuid', { name: 'user_verification_code_id' })
   userVerificationCodeId: string;
