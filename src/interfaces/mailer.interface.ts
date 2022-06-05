@@ -1,11 +1,11 @@
 export class SetLogEmailInterface {
   description!: string;
-  sendTo!: string | string[];
+  sendTo!: string;
 }
 
 export class MailOptionsInterface {
   from?: string;
-  to!: string | string[];
+  to!: string;
   cc?: string | string[];
   bcc?: string | string[];
   subject!: string;

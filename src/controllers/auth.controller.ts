@@ -29,29 +29,6 @@ export class AuthController {
     }
   }
 
-  static async checkAvailabilityEmail(req: Request, res: Response) {
-    const email: string = req.body.email;
-    try {
-      if (!email) throw Error('Email is empty');
-      const { result, code } = await AuthService.checkAvailabilityEmail(email);
-
-      if (code !== 200) {
-        res.status(code).json({
-          message: 'Error',
-          error: result,
-        });
-      } else {
-        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
-          message: 'Success',
-          data: result,
-        });
-      }
-    } catch (e) {
-      console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
-    }
-  }
-
   static async signUp(req: Request, res: Response) {
     const params: SignUp = req.body;
     const email: string = req.cookies.email;
@@ -79,6 +56,29 @@ export class AuthController {
     }
   }
 
+  static async checkAvailabilityEmail(req: Request, res: Response) {
+    const email: string = req.body.email;
+    try {
+      if (!email) throw Error('Email is empty');
+      const { result, code } = await AuthService.checkAvailabilityEmail(email);
+
+      if (code !== 200) {
+        res.status(code).json({
+          message: 'Error',
+          error: result,
+        });
+      } else {
+        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
+          message: 'Success',
+          data: result,
+        });
+      }
+    } catch (e) {
+      console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
+
   static async verifyActivationCode(req: Request, res: Response) {
     const email: string = req.cookies.email;
     const activationCode: string = req.body.activationCode;
@@ -101,6 +101,29 @@ export class AuthController {
       }
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
+
+  static async resendActivationCode(req: Request, res: Response) {
+    const email: string = req.cookies.email;
+    try {
+      if (!email) throw Error('Email is empty');
+      const { result, code } = await AuthService.resendActivationCode(email);
+
+      if (code !== 200) {
+        res.status(code).json({
+          message: 'Error',
+          error: result,
+        });
+      } else {
+        res.status(code).json({
+          message: 'Success',
+          data: result,
+        });
+      }
+    } catch (e) {
+      console.error({ service: 'AuthController.resendActivationCode', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
     }
   }

@@ -1,9 +1,10 @@
 import nodemailer from 'nodemailer';
 import { Config } from '../helpers/config.helper';
 import hbs from 'nodemailer-express-handlebars';
-// import { Connection } from '../config/db.config';
+import { Connection } from '../config/db.config';
 import moment from 'moment';
 import { MailOptionsInterface, SetLogEmailInterface } from '~/interfaces/mailer.interface';
+import { LogMail } from '../models/log-mail';
 
 export class MailerService {
   constructor() {}
@@ -71,7 +72,7 @@ export class MailerService {
 
       const dataset = {
         description: data.description,
-        sendTo: data.sendTo,
+        recipient: data.sendTo,
         status: status,
         response: response.response,
         responseDetail: JSON.stringify(response),
@@ -79,13 +80,7 @@ export class MailerService {
       };
 
       /** Insert log */
-      console.log(dataset);
-      // await Connection
-      //   .createQueryBuilder()
-      //   .insert()
-      //   .into(TbpbenefitLogMail)
-      //   .values(dataset)
-      //   .execute();
+      await Connection.createQueryBuilder().insert().into(LogMail).values(dataset).execute();
 
       console.log(response, data);
     } catch (e) {

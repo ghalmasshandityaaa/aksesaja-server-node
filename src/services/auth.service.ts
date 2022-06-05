@@ -17,10 +17,13 @@ export class AuthService {
         .getOne();
 
       if (!getUsers) {
+        /** If users not found */
         throw Error('Sorry your email is not registered');
       } else if (textDecrypt(params.password) !== textDecrypt(getUsers.password)) {
-        throw Error('Sorry your password is wrong');
+        /** if password input and db not match */
+        throw Error('Sorry email or password not match');
       } else if (!getUsers.isActive) {
+        /** if account is inactive */
         throw Error('Sorry your account is not activated');
       }
 
@@ -41,11 +44,32 @@ export class AuthService {
         createdBy: 'API Auth SignUp',
       };
 
+      /** Insert Users */
       await Connection.createQueryBuilder().insert().into(Users).values(datatemp).execute();
 
       return { result: null, code: 201 };
     } catch (e) {
       console.error({ service: 'AuthService.signUp', message: e.message, stack: e.stack });
+      throw e;
+    }
+  }
+
+  static async checkAvailabilityEmail(email: string) {
+    try {
+      const checkEmail = await Users.createQueryBuilder('users')
+        .where('users.email = :email', { email })
+        .select('users.email')
+        .getOne();
+
+      /** Check email is exist or not */
+      if (checkEmail) return { result: 'Email is registered', code: 409 };
+
+      /** Send activation code to email users */
+      await this.generateActivationCode(email);
+
+      return { result: null, code: 200 };
+    } catch (e) {
+      console.error({ service: 'AuthService.checkAvailabilityEmail', message: e.message, stack: e.stack });
       throw e;
     }
   }
@@ -57,8 +81,10 @@ export class AuthService {
         .getOne();
 
       if (!getUserVerificationCode) {
+        /** verification email not found */
         throw Error('Sorry your email is not registered');
       } else if (getUserVerificationCode.verificationCode !== activationCode) {
+        /** verification code not match */
         if (getUserVerificationCode.retry + 1 <= 3) {
           await Connection.createQueryBuilder()
             .update(UserVerificationCode)
@@ -80,34 +106,36 @@ export class AuthService {
 
           throw Error('Sorry you reached the maximum trial limit');
         }
-      } else if (getUserVerificationCode.verificationCode === activationCode) {
-        await Connection.createQueryBuilder()
-          .insert()
-          .into(Users)
-          .values({
-            email: email,
-            isActive: true,
-            createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
-          })
-          .execute();
       }
 
-      return { result: 'Congratulations, your account has been successfully activated', code: 200 };
+      return { result: 'Congratulations, your email has been successfully verified', code: 200 };
     } catch (e) {
       console.error({ service: 'AuthService.verifyActivationCode', message: e.message, stack: e.stack });
       throw e;
     }
   }
 
-  static async checkAvailabilityEmail(email: string) {
+  static async resendActivationCode(email: string) {
     try {
-      const checkEmail = await Users.createQueryBuilder('users')
-        .where('users.email = :email', { email })
-        .select('users.email')
+      const checkEmailIsExist = await UserVerificationCode.createQueryBuilder('code')
+        .where('code.email = :email', { email: email })
+        .select('code.email')
         .getOne();
 
-      if (checkEmail) return { result: 'Email is registered', code: 409 };
+      if (!checkEmailIsExist) throw Error('Sorry your email is not registered'); /** If email not found */
 
+      /** Generate verification code */
+      await this.generateActivationCode(email);
+
+      return { result: 'Activation code has been sent to your email', code: 200 };
+    } catch (e) {
+      console.error({ service: 'AuthService.resendActivationCode', message: e.message, stack: e.stack });
+      throw e;
+    }
+  }
+
+  static async generateActivationCode(email: string) {
+    try {
       /** Generate activation code, Begin */
       /** Delete existing activation code */
       await Connection.createQueryBuilder()
@@ -144,9 +172,8 @@ export class AuthService {
 
       await MailerService.sendEmail(mailOptions);
       /** Send email, End */
-      return { result: null, code: 200 };
     } catch (e) {
-      console.error({ service: 'AuthService.checkAvailabilityEmail', message: e.message, stack: e.stack });
+      console.error({ service: 'AuthService.generateActivationCode', message: e.message, stack: e.stack });
       throw e;
     }
   }
