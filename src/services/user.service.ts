@@ -1,20 +1,7 @@
-/**
- * Where to import Services
- */
-// const ProductService = require('../services/product.service');
-
-/**
- * Where to import Schema
- */
-// const ProductSchema = require('../schema/product.schema');
-
-/**
- * Where to import Models
- */
 import { Users } from '../models/users';
 
 export class UserService {
-  constructor() {} // private readonly companyService: CompanyService,
+  constructor() { }
 
   static async getAllUsers() {
     try {
