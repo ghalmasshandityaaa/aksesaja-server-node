@@ -5,7 +5,7 @@ import { textDecrypt, textEncrypt } from '../helpers/helper';
 import { SECURE_COOKIES } from '../constants/auth.constant';
 
 export class AuthController {
-  constructor() { }
+  constructor() {}
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -41,12 +41,10 @@ export class AuthController {
           error: result,
         });
       } else {
-        res.status(code)
-          .cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES })
-          .json({
-            message: 'Success',
-            data: result,
-          });
+        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
+          message: 'Success',
+          data: result,
+        });
       }
     } catch (e) {
       console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
@@ -91,18 +89,15 @@ export class AuthController {
       const { result, code } = await AuthService.verifyActivationCode(email, activationCode);
 
       if (code !== 200) {
-        res.status(code)
-          .json({
-            message: 'Error',
-            error: result,
-          });
+        res.status(code).json({
+          message: 'Error',
+          error: result,
+        });
       } else {
-        res.status(code)
-          .cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES })
-          .json({
-            message: 'Success',
-            data: result,
-          });
+        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
+          message: 'Success',
+          data: result,
+        });
       }
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });
@@ -119,7 +114,7 @@ export class AuthController {
       res.status(200).json({
         message: 'Success',
         encrypted: encrypt,
-      })
+      });
     } catch (e) {
       console.error({ service: 'AuthController.encrypt', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -135,7 +130,7 @@ export class AuthController {
       res.status(200).json({
         message: 'Success',
         decrypted: decrypt,
-      })
+      });
     } catch (e) {
       console.error({ service: 'AuthController.decrypt', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
