@@ -7,6 +7,8 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import { Connection } from './config/db.config';
 import { onError, error404, clientErrorHandler, logErrors } from './helpers/server.helper';
+import initializeCronJob from './cron/auth.cron';
+import { Config } from './helpers/config.helper';
 dotenv.config();
 
 const app: Express = express();
@@ -15,7 +17,16 @@ const HOST: string = process.env.APP_HOST || '0.0.0.0';
 
 /** Initialize database */
 Connection.initialize()
-  .then(() => console.log('Database connected!'))
+  .then(() => {
+    console.log('Database connected!'); /** Log if database connected */
+
+    /** Initialize Cron Job */
+    if (Config.getBoolean('IS_ACTIVATE_CRON')) {
+      initializeCronJob();
+    } else {
+      console.log('Cron job is not running!');
+    }
+  })
   .catch((error) => console.log({ message: 'Database connection failed!', error: error.message }));
 
 /** Initialize middleware */
