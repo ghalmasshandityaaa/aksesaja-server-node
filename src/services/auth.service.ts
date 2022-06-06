@@ -177,4 +177,19 @@ export class AuthService {
       throw e;
     }
   }
+
+  static async checkExpiredActivationCode() {
+    try {
+      await Connection
+        .createQueryBuilder()
+        .delete()
+        .from(UserVerificationCode)
+        .where('expired_date < :expiredDate', { expiredDate: moment().format('YYYY-MM-DD HH:mm:ss') })
+        .execute();
+      console.info('Running Cron Job: CheckExpiredActivationCode');
+    } catch (e) {
+      console.error({ service: 'AuthService.checkExpiredActivationCode', message: e.message, stack: e.stack });
+      throw e;
+    }
+  }
 }
