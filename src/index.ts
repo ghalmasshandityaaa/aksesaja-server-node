@@ -19,10 +19,12 @@ Connection.initialize()
   .catch((error) => console.log({ message: 'Database connection failed!', error: error.message }));
 
 /** Initialize middleware */
-app.use(cors({
-  credentials: true,
-  origin: ['http://localhost:3000', 'https://aksesaja-webapp-dev.vercel.app'],
-}));
+app.use(
+  cors({
+    credentials: true,
+    origin: ['http://localhost:3000', 'https://aksesaja-webapp-dev.vercel.app'],
+  }),
+);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
