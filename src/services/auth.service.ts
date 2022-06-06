@@ -8,7 +8,7 @@ import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
 
 export class AuthService {
-  constructor() {}
+  constructor() { }
 
   static async signIn(params: SignIn) {
     try {
@@ -18,13 +18,13 @@ export class AuthService {
 
       if (!getUsers) {
         /** If users not found */
-        throw Error('Sorry your email is not registered');
+        throw Error('Maaf email anda belum terdaftar!');
       } else if (textDecrypt(params.password) !== textDecrypt(getUsers.password)) {
         /** if password input and db not match */
-        throw Error('Sorry email or password not match');
+        throw Error('Maaf password anda salah!');
       } else if (!getUsers.isActive) {
         /** if account is inactive */
-        throw Error('Sorry your account is not activated');
+        throw Error('Maaf akun anda belum aktif!');
       }
 
       return { result: getUsers, code: 200 };
@@ -62,7 +62,7 @@ export class AuthService {
         .getOne();
 
       /** Check email is exist or not */
-      if (checkEmail) return { result: 'Email is registered', code: 409 };
+      if (checkEmail) return { result: 'Maaf email tersebut sudah terdaftar!', code: 409 };
 
       /** Send activation code to email users */
       await this.generateActivationCode(email);
@@ -82,7 +82,7 @@ export class AuthService {
 
       if (!getUserVerificationCode) {
         /** verification email not found */
-        throw Error('Sorry your email is not registered');
+        throw Error('Maaf email belum terdaftar!');
       } else if (getUserVerificationCode.verificationCode !== activationCode) {
         /** verification code not match */
         if (getUserVerificationCode.retry + 1 <= 3) {
@@ -96,7 +96,7 @@ export class AuthService {
             .where('email = :email', { email: email })
             .execute();
 
-          throw Error(`Sorry your activation code is wrong: ${getUserVerificationCode.retry + 1}x`);
+          throw Error(`Maaf kode aktivasi yang anda masukkan salah: ${getUserVerificationCode.retry + 1}x`);
         } else {
           await Connection.createQueryBuilder()
             .delete()
@@ -104,11 +104,11 @@ export class AuthService {
             .where('email = :email', { email: email })
             .execute();
 
-          throw Error('Sorry you reached the maximum trial limit');
+          throw Error('Maaf anda sudah melebihi 3 kali mencoba kode aktivasi yang salah!');
         }
       }
 
-      return { result: 'Congratulations, your email has been successfully verified', code: 200 };
+      return { result: 'Selamat, email Anda telah berhasil diverifikasi', code: 200 };
     } catch (e) {
       console.error({ service: 'AuthService.verifyActivationCode', message: e.message, stack: e.stack });
       throw e;
@@ -122,12 +122,12 @@ export class AuthService {
         .select('code.email')
         .getOne();
 
-      if (!checkEmailIsExist) throw Error('Sorry your email is not registered'); /** If email not found */
+      if (!checkEmailIsExist) throw Error('Maaf email anda tidak terdaftar!'); /** If email not found */
 
       /** Generate verification code */
       await this.generateActivationCode(email);
 
-      return { result: 'Activation code has been sent to your email', code: 200 };
+      return { result: 'Kode aktivasi telah dikirim ke email Anda!', code: 200 };
     } catch (e) {
       console.error({ service: 'AuthService.resendActivationCode', message: e.message, stack: e.stack });
       throw e;
