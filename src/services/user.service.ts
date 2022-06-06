@@ -1,7 +1,7 @@
 import { Users } from '../models/users';
 
 export class UserService {
-  constructor() { }
+  constructor() {}
 
   static async getAllUsers() {
     try {

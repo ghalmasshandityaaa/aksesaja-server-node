@@ -569,3 +569,13 @@ CREATE TABLE user_verification_code (
 	"updated_at" timestamp default NULL,
 	"updated_by" text default NULL
 ); -- dev
+
+CREATE TABLE log_mail (
+  "log_mail_id" uuid unique DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "description" varchar(50) not null,
+  "recipient" text not null,
+  "status" varchar(7) default 'SUCCESS',
+  "response" text not null,
+	"response_detail" text NOT NULL,
+	"created_at" timestamp NOT NULL
+); -- dev

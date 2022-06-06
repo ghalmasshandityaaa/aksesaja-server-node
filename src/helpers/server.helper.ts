@@ -19,7 +19,7 @@ export function normalizePort(value: string) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Event listener for HTTP server 'error' event.
  */
 const PORT: string = process.env.PORT || '5000';
 export function onError(error: any) {
