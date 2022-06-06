@@ -8,7 +8,7 @@ import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
 
 export class AuthService {
-  constructor() { }
+  constructor() {}
 
   static async signIn(params: SignIn) {
     try {
@@ -180,8 +180,7 @@ export class AuthService {
 
   static async checkExpiredActivationCode() {
     try {
-      await Connection
-        .createQueryBuilder()
+      await Connection.createQueryBuilder()
         .delete()
         .from(UserVerificationCode)
         .where('expired_date < :expiredDate', { expiredDate: moment().format('YYYY-MM-DD HH:mm:ss') })

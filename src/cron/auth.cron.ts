@@ -7,4 +7,4 @@ export default () => {
 
   /** Start cron job */
   checkExpiredActivationCode.start();
-}
+};
