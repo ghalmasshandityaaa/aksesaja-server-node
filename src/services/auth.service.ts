@@ -8,7 +8,7 @@ import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
 
 export class AuthService {
-  constructor() {}
+  constructor() { }
 
   static async signIn(params: SignIn) {
     try {
@@ -85,27 +85,17 @@ export class AuthService {
         throw Error('Maaf email belum terdaftar!');
       } else if (getUserVerificationCode.verificationCode !== activationCode) {
         /** verification code not match */
-        if (getUserVerificationCode.retry + 1 <= 3) {
-          await Connection.createQueryBuilder()
-            .update(UserVerificationCode)
-            .set({
-              retry: getUserVerificationCode.retry + 1,
-              updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
-              updatedBy: 'API Auth VerifyActivationCode',
-            })
-            .where('email = :email', { email: email })
-            .execute();
+        await Connection.createQueryBuilder()
+          .update(UserVerificationCode)
+          .set({
+            retry: getUserVerificationCode.retry + 1,
+            updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+            updatedBy: 'API Auth VerifyActivationCode',
+          })
+          .where('email = :email', { email: email })
+          .execute();
 
-          throw Error(`Maaf kode aktivasi yang anda masukkan salah: ${getUserVerificationCode.retry + 1}x`);
-        } else {
-          await Connection.createQueryBuilder()
-            .delete()
-            .from(UserVerificationCode)
-            .where('email = :email', { email: email })
-            .execute();
-
-          throw Error('Maaf anda sudah melebihi 3 kali mencoba kode aktivasi yang salah!');
-        }
+        throw Error('Maaf kode aktivasi yang anda masukkan salah');
       }
 
       return { result: 'Selamat, email Anda telah berhasil diverifikasi', code: 200 };
