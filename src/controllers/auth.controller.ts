@@ -80,6 +80,7 @@ export class AuthController {
   }
 
   static async verifyActivationCode(req: Request, res: Response) {
+    console.log(req);
     const email: string = req.cookies.email;
     const activationCode: string = req.body.activationCode;
     try {
