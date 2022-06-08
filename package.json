@@ -33,6 +33,7 @@
     "nodemailer-express-handlebars": "^5.0.0",
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
+    "request-ip": "^2.2.0",
     "typeorm": "^0.3.6"
   },
   "devDependencies": {
@@ -44,6 +45,7 @@
     "@types/morgan": "^1.9.3",
     "@types/node": "^17.0.32",
     "@types/nodemailer-express-handlebars": "^4.0.2",
+    "@types/request-ip": "0.0.37",
     "concurrently": "^7.1.0",
     "nodemon": "^2.0.16",
     "prettier": "^2.6.2",

@@ -9,6 +9,7 @@ import { Connection } from './config/db.config';
 import { onError, error404, clientErrorHandler, logErrors } from './helpers/server.helper';
 import initializeCronJob from './cron/auth.cron';
 import { Config } from './helpers/config.helper';
+import * as requestIp from 'request-ip';
 dotenv.config();
 
 const app: Express = express();
@@ -41,6 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(requestIp.mw());
 
 /** Router Import */
 import indexRouter from './routes/index';

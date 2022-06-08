@@ -1,4 +1,5 @@
-import express, { Response } from 'express';
+import express, { Response, Request } from 'express';
+import * as requestIp from 'request-ip';
 const router = express.Router();
 
 /* Import routes. */
@@ -27,6 +28,18 @@ router.get('/', (_, res: Response) => {
       address: 'Tangerang Selatan, Banten, Indonesia',
     },
   });
+});
+
+router.get('/myIp', (req: Request, res: Response) => {
+  const data = {
+    clientIp: req.clientIp,
+    ipaddr: req.ip,
+    head: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+    ips: req.connection.remoteAddress,
+    ips2: requestIp.getClientIp(req),
+  }
+
+  res.send(data)
 });
 
 export default router;
