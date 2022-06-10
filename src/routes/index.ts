@@ -1,6 +1,7 @@
 import express, { Response, Request } from 'express';
 import * as requestIp from 'request-ip';
 import { address } from 'ip';
+import dns from 'dns';
 const router = express.Router();
 
 /* Import routes. */
@@ -50,6 +51,14 @@ router.get('/myIp', async (req: Request, res: Response) => {
       }
     }
   }
+
+  let ipHost;
+  const ip = dns.lookup(req.get('host')!, async (_, result) => {
+    ipHost = result;
+    console.log(result)
+    return result;
+  });
+
   const data = {
     clientIp: req.clientIp,
     ip: req.ip,
@@ -69,7 +78,9 @@ router.get('/myIp', async (req: Request, res: Response) => {
     hostname: os.hostname(),
     protocol: req.protocol,
     host: req.get('host'),
-    pathname: req.originalUrl
+    pathname: req.originalUrl,
+    ipHost: ipHost,
+    ipHost2: ip,
   };
 
   res.json(data)
