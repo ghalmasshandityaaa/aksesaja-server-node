@@ -2,16 +2,15 @@ import express, { Response, Request } from 'express';
 import * as requestIp from 'request-ip';
 import { address } from 'ip';
 import dns from 'dns';
-// import util from 'util';
-import ping from 'ping';
-// const exec = util.promisify(require('child_process').exec);
+import util from 'util';
+const exec = util.promisify(require('child_process').exec);
 const router = express.Router();
 
 /* Import routes. */
 import userRouter from './user';
 import authRouter from './auth';
 import { networkInterfaces } from 'os';
-// import { ipv4 } from 'ipify2';
+import { ipv4 } from 'ipify2';
 import os from 'os';
 
 /* Route Release. */
@@ -38,7 +37,7 @@ router.get('/', (_, res: Response) => {
   });
 });
 
-router.get('/myIp', (req: Request, res: Response) => {
+router.get('/myIp', async (req: Request, res: Response) => {
   try {
     const nets = networkInterfaces();
     const results = Object.create(null);
@@ -65,30 +64,20 @@ router.get('/myIp', (req: Request, res: Response) => {
     let ipHost;
     const ip = dns.lookup(req.get('host')!, async (_, result) => {
       ipHost = result;
-      console.log('ip', result)
+      console.log(result)
       return result;
     });
 
-    // const pong = async (host: any) => {
-    //   new Promise((resolve, _) => {
-    //     try {
-    //       const { stdout, stderr } = exec(`ping ${host}`);
-    //       console.log('stdout', stdout);
-    //       console.log('stderr', stderr);
-    //       const x = {
-    //         stdout,
-    //         stderr
-    //       }
-    //       resolve(x);
-    //     } catch {
-    //       console.log('server time out');
-    //       throw Error('server time out');
-    //     }
-    //   });
+    let value: any;
+    const x = async (host: any) => {
+      const { stdout } = await exec(`ping -i 1 ${host}`);
+      value = stdout.toString();
+    }
+    // await ping(req.get('host') === 'localhost:5001' ? 'transfer.greatdayhr.com' : req.get('host'));
 
+    const host = req.get('host') === 'localhost:5001' ? 'transfer.greatdayhr.com' : req.get('host');
 
-    // }
-    // await pong(req.get('host') === 'localhost:5001' ? 'transfer.greatdayhr.com' : req.get('host'));
+    await x(host);
 
     const data = {
       clientIp: req.clientIp,
@@ -105,7 +94,7 @@ router.get('/myIp', (req: Request, res: Response) => {
       publicv6: address('public', 'ipv6'),
       privatev6: address('private', 'ipv6'),
       privatev4: address('private', 'ipv4'),
-      // ipify3: await ipv4(),
+      ipify3: await ipv4(),
       hostname: os.hostname(),
       protocol: req.protocol,
       host: req.get('host'),
@@ -116,17 +105,11 @@ router.get('/myIp', (req: Request, res: Response) => {
       hostAddress2: iphost2,
     };
 
-    const yy = req.get('host') === 'localhost:5001' ? 'aksesaja-dev.herokuapp.com' : req.get('host');
-
-    ping.promise.probe(yy!)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err)
-      });
-
-    res.json(data)
+    const publicIp = (value!).slice(
+      value.indexOf('[') + 1,
+      value.lastIndexOf(']'),
+    )
+    res.json({ data, publicIp })
   } catch (e) {
     res.json(e)
   }
