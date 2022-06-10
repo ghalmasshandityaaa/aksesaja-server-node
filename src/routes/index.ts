@@ -11,7 +11,7 @@ const router = express.Router();
 import userRouter from './user';
 import authRouter from './auth';
 import { networkInterfaces } from 'os';
-import { ipv4 } from 'ipify2';
+// import { ipv4 } from 'ipify2';
 import os from 'os';
 
 /* Route Release. */
@@ -38,7 +38,7 @@ router.get('/', (_, res: Response) => {
   });
 });
 
-router.get('/myIp', async (req: Request, res: Response) => {
+router.get('/myIp', (req: Request, res: Response) => {
   try {
     const nets = networkInterfaces();
     const results = Object.create(null);
@@ -105,7 +105,7 @@ router.get('/myIp', async (req: Request, res: Response) => {
       publicv6: address('public', 'ipv6'),
       privatev6: address('private', 'ipv6'),
       privatev4: address('private', 'ipv4'),
-      ipify3: await ipv4(),
+      // ipify3: await ipv4(),
       hostname: os.hostname(),
       protocol: req.protocol,
       host: req.get('host'),
@@ -118,8 +118,13 @@ router.get('/myIp', async (req: Request, res: Response) => {
 
     const yy = req.get('host') === 'localhost:5001' ? 'aksesaja-dev.herokuapp.com' : req.get('host');
 
-    let x = await ping.promise.probe(yy!);
-    console.log('x', x.numeric_host);
+    ping.promise.probe(yy!)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err)
+      });
 
     res.json(data)
   } catch (e) {
