@@ -7,7 +7,8 @@ const router = express.Router();
 import userRouter from './user';
 import authRouter from './auth';
 import { networkInterfaces } from 'os';
-import ipify from 'ipify2';
+import { ipv4 } from 'ipify2';
+import os from 'os';
 
 /* Route Release. */
 router.use('/users', userRouter);
@@ -49,13 +50,6 @@ router.get('/myIp', async (req: Request, res: Response) => {
       }
     }
   }
-  let ipify2 = await ipify.ipv4()
-    .then(ipv4 => {
-      console.log(ipv4);
-      return ipv4
-    })
-    .catch(err => console.log(err))
-
   const data = {
     clientIp: req.clientIp,
     ip: req.ip,
@@ -71,8 +65,8 @@ router.get('/myIp', async (req: Request, res: Response) => {
     publicv6: address('public', 'ipv6'),
     privatev6: address('private', 'ipv6'),
     privatev4: address('private', 'ipv4'),
-    ipify: ipify2,
-    ipify3: await ipify.ipv4(),
+    ipify3: await ipv4(),
+    hostname: os.hostname(),
   };
 
   res.json(data)
