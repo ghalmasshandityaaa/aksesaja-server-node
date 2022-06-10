@@ -67,6 +67,9 @@ router.get('/myIp', async (req: Request, res: Response) => {
     privatev4: address('private', 'ipv4'),
     ipify3: await ipv4(),
     hostname: os.hostname(),
+    protocol: req.protocol,
+    host: req.get('host'),
+    pathname: req.originalUrl
   };
 
   res.json(data)
