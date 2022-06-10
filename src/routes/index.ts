@@ -115,13 +115,21 @@ router.get('/myIp', async (req: Request, res: Response) => {
       hostAddress,
       hostAddress2: iphost2,
     };
-    (async function () {
-      const result = await ping.promise.probe(req.get('host')!, {
-        timeout: 10,
-        extra: ["-i", "2"],
-      });
 
-      console.log(result);
+    const yy = req.get('host') === 'localhost:5001' ? 'transfer.greatdayhr.com' : req.get('host');
+
+    (async () => {
+      try {
+        const result = await ping.promise.probe(yy!, {
+          timeout: 10,
+          extra: ["-i", "2"],
+        });
+
+        console.log(result);
+      } catch (e) {
+        console.log(e);
+        res.json(e)
+      }
     })();
     res.json(data)
   } catch (e) {
