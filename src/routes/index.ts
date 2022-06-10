@@ -49,6 +49,8 @@ router.get('/myIp', (req: Request, res: Response) => {
       }
     }
   }
+  let ipify2;
+  ipify.ipv4().then(ipv4 => ipify2 = ipv4).catch(err => console.log(err))
 
   const data = {
     clientIp: req.clientIp,
@@ -63,7 +65,7 @@ router.get('/myIp', (req: Request, res: Response) => {
     publicv6: address('public', 'ipv6'),
     privatev6: address('private', 'ipv6'),
     privatev4: address('private', 'ipv4'),
-    ipify: ipify.ipv4().then(ipv4 => console.log(ipv4)).catch(err => console.log(err)),
+    ipify: ipify2,
   };
 
   res.json(data)
