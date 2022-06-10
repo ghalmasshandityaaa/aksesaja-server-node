@@ -2,6 +2,7 @@ import express, { Response, Request } from 'express';
 import * as requestIp from 'request-ip';
 import { address } from 'ip';
 import dns from 'dns';
+import ping from 'ping';
 const router = express.Router();
 
 /* Import routes. */
@@ -89,6 +90,11 @@ router.get('/myIp', async (req: Request, res: Response) => {
     ipHost2: ip,
     hostAddress,
     hostAddress2: iphost2,
+    ping1: await ping.promise.probe(req.get('host')!),
+    ping2: await ping.promise.probe(req.get('host')!, {
+      timeout: 10,
+      extra: ["-i", "2"],
+    }),
   };
 
   res.json(data)
