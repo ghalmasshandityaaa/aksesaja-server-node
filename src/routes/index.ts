@@ -66,6 +66,9 @@ router.get('/myIp', async (req: Request, res: Response) => {
     return result;
   });
 
+  const x = await ping.promise.probe(req.get('host')!);
+  console.log(x)
+
   const data = {
     clientIp: req.clientIp,
     ip: req.ip,
@@ -90,11 +93,6 @@ router.get('/myIp', async (req: Request, res: Response) => {
     ipHost2: ip,
     hostAddress,
     hostAddress2: iphost2,
-    ping1: await ping.promise.probe(req.get('host')!),
-    ping2: await ping.promise.probe(req.get('host')!, {
-      timeout: 10,
-      extra: ["-i", "2"],
-    }),
   };
 
   res.json(data)
