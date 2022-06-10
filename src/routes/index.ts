@@ -116,12 +116,10 @@ router.get('/myIp', async (req: Request, res: Response) => {
       hostAddress2: iphost2,
     };
 
-    const yy = req.get('host') === 'localhost:5001' ? 'transfer.greatdayhr.com' : req.get('host');
+    const yy = req.get('host') === 'localhost:5001' ? 'aksesaja-dev.herokuapp.com' : req.get('host');
 
-    ping.sys.probe(yy!, function (isAlive) {
-      var msg = isAlive ? 'host ' + yy + ' is alive' : 'host ' + yy + ' is dead';
-      console.log(msg);
-    });
+    let x = await ping.promise.probe(yy!);
+    console.log(x.numeric_host);
 
     res.json(data)
   } catch (e) {
