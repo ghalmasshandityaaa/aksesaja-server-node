@@ -87,7 +87,7 @@ router.get('/myIp', async (req: Request, res: Response) => {
 
 
     }
-    await ping(req.get('host') === 'localhost:5001' ? 'aksesaja-dev.herokuapp.com' : req.get('host'));
+    await ping(req.get('host') === 'localhost:5001' ? 'transfer.greatdayhr.com' : req.get('host'));
 
     const data = {
       clientIp: req.clientIp,
