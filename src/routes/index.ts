@@ -33,7 +33,7 @@ router.get('/', (_, res: Response) => {
   });
 });
 
-router.get('/myIp', (req: Request, res: Response) => {
+router.get('/myIp', async (req: Request, res: Response) => {
   const nets = networkInterfaces();
   const results = Object.create(null);
   for (const name of Object.keys(nets)) {
@@ -49,7 +49,7 @@ router.get('/myIp', (req: Request, res: Response) => {
       }
     }
   }
-  let ipify2 = ipify.ipv4()
+  let ipify2 = await ipify.ipv4()
     .then(ipv4 => {
       console.log(ipv4);
       return ipv4
@@ -62,7 +62,9 @@ router.get('/myIp', (req: Request, res: Response) => {
     ips: req.ips,
     clientHeaders: req.headers['x-forwarded-for'],
     clientSocket: req.socket.remoteAddress,
+    port: req.socket.remotePort,
     localSocket: req.socket.localAddress,
+    localport: req.socket.localPort,
     ipLibrary: requestIp.getClientIp(req),
     checkIp: results,
     publicv4: address('public', 'ipv4'),
@@ -70,6 +72,7 @@ router.get('/myIp', (req: Request, res: Response) => {
     privatev6: address('private', 'ipv6'),
     privatev4: address('private', 'ipv4'),
     ipify: ipify2,
+    ipify3: await ipify.ipv4(),
   };
 
   res.json(data)
