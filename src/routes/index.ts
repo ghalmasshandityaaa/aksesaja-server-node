@@ -51,6 +51,12 @@ router.get('/myIp', async (req: Request, res: Response) => {
       }
     }
   }
+  let hostAddress;
+  const iphost2 = dns.lookup(req.get('host')!, { family: 4 }, async (_, address, family) => {
+    console.log('address: %j family: IPv%s', address, family);
+    hostAddress = address;
+    return address;
+  });
 
   let ipHost;
   const ip = dns.lookup(req.get('host')!, async (_, result) => {
@@ -81,6 +87,8 @@ router.get('/myIp', async (req: Request, res: Response) => {
     pathname: req.originalUrl,
     ipHost: ipHost,
     ipHost2: ip,
+    hostAddress,
+    hostAddress2: iphost2,
   };
 
   res.json(data)
