@@ -2,9 +2,9 @@ import express, { Response, Request } from 'express';
 import * as requestIp from 'request-ip';
 import { address } from 'ip';
 import dns from 'dns';
-import util from 'util';
+// import util from 'util';
 import ping from 'ping';
-const exec = util.promisify(require('child_process').exec);
+// const exec = util.promisify(require('child_process').exec);
 const router = express.Router();
 
 /* Import routes. */
