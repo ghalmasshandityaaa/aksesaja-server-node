@@ -49,8 +49,12 @@ router.get('/myIp', (req: Request, res: Response) => {
       }
     }
   }
-  let ipify2;
-  ipify.ipv4().then(ipv4 => ipify2 = ipv4).catch(err => console.log(err))
+  let ipify2 = ipify.ipv4()
+    .then(ipv4 => {
+      console.log(ipv4);
+      return ipv4
+    })
+    .catch(err => console.log(err))
 
   const data = {
     clientIp: req.clientIp,
