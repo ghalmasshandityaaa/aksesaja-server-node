@@ -1,10 +1,12 @@
 import express, { Response, Request } from 'express';
 import * as requestIp from 'request-ip';
+import { address } from 'ip';
 const router = express.Router();
 
 /* Import routes. */
 import userRouter from './user';
 import authRouter from './auth';
+import { networkInterfaces } from 'os';
 
 /* Route Release. */
 router.use('/users', userRouter);
@@ -31,13 +33,40 @@ router.get('/', (_, res: Response) => {
 });
 
 router.get('/myIp', (req: Request, res: Response) => {
+  const nets = networkInterfaces();
+  const results = Object.create(null);
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]!) {
+      // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+      // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
+      const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4;
+      if (net.family === familyV4Value && !net.internal) {
+        if (!results[name]) {
+          results[name] = [];
+        }
+        results[name].push(net.address);
+      }
+    }
+  }
+
   const data = {
     clientIp: req.clientIp,
-    ipaddr: req.ip,
-    head: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-    ips: req.connection.remoteAddress,
-    ips2: requestIp.getClientIp(req),
-  }
+    ip: req.ip,
+    ips: req.ips,
+    clientHeaders: req.headers['x-forwarded-for'],
+    clientSocket: req.socket.remoteAddress,
+    clientConnection: req.connection.remoteAddress,
+    doubleIp: req.connection,
+    doubleIp2: req.socket,
+    local: req.connection.localAddress,
+    localSocket: req.socket.localAddress,
+    ipLibrary: requestIp.getClientIp(req),
+    checkIp: results,
+    publicv4: address('public', 'ipv4'),
+    publicv6: address('public', 'ipv6'),
+    privatev6: address('private', 'ipv6'),
+    privatev4: address('private', 'ipv4'),
+  };
 
   res.send(data)
 });
