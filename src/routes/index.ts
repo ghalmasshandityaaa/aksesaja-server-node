@@ -65,7 +65,7 @@ router.get('/myIp', async (req: Request, res: Response) => {
     let ipHost;
     const ip = dns.lookup(req.get('host')!, async (_, result) => {
       ipHost = result;
-      console.log(result)
+      console.log('ip', result)
       return result;
     });
 
@@ -119,7 +119,7 @@ router.get('/myIp', async (req: Request, res: Response) => {
     const yy = req.get('host') === 'localhost:5001' ? 'aksesaja-dev.herokuapp.com' : req.get('host');
 
     let x = await ping.promise.probe(yy!);
-    console.log(x.numeric_host);
+    console.log('x', x.numeric_host);
 
     res.json(data)
   } catch (e) {
