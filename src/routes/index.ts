@@ -2,7 +2,8 @@ import express, { Response, Request } from 'express';
 import * as requestIp from 'request-ip';
 import { address } from 'ip';
 import dns from 'dns';
-import ping from 'ping';
+import util from 'util';
+const exec = util.promisify(require('child_process').exec);
 const router = express.Router();
 
 /* Import routes. */
@@ -66,8 +67,12 @@ router.get('/myIp', async (req: Request, res: Response) => {
     return result;
   });
 
-  const x = await ping.promise.probe(req.get('host')!);
-  console.log(x)
+  const ping = async (host: any) => {
+    const { stdout, stderr } = await exec(`ping ${host}`);
+    console.log(stdout);
+    console.log(stderr);
+  }
+  await ping(req.get('host') === 'localhost:5001' ? 'api.greatdayhr.com' : req.get('host'));
 
   const data = {
     clientIp: req.clientIp,
