@@ -55,10 +55,6 @@ router.get('/myIp', (req: Request, res: Response) => {
     ips: req.ips,
     clientHeaders: req.headers['x-forwarded-for'],
     clientSocket: req.socket.remoteAddress,
-    clientConnection: req.connection.remoteAddress,
-    doubleIp: req.connection,
-    doubleIp2: req.socket,
-    local: req.connection.localAddress,
     localSocket: req.socket.localAddress,
     ipLibrary: requestIp.getClientIp(req),
     checkIp: results,
@@ -68,7 +64,7 @@ router.get('/myIp', (req: Request, res: Response) => {
     privatev4: address('private', 'ipv4'),
   };
 
-  res.send(data)
+  res.json(data)
 });
 
 export default router;
