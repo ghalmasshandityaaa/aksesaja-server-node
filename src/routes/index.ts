@@ -3,6 +3,7 @@ import * as requestIp from 'request-ip';
 import { address } from 'ip';
 import dns from 'dns';
 import util from 'util';
+import ping from 'ping';
 const exec = util.promisify(require('child_process').exec);
 const router = express.Router();
 
@@ -68,26 +69,26 @@ router.get('/myIp', async (req: Request, res: Response) => {
       return result;
     });
 
-    const ping = async (host: any) => {
-      new Promise((resolve, _) => {
-        try {
-          const { stdout, stderr } = exec(`ping ${host}`);
-          console.log(stdout);
-          console.log(stderr);
-          const x = {
-            stdout,
-            stderr
-          }
-          resolve(x);
-        } catch {
-          console.log('server time out');
-          throw Error('server time out');
-        }
-      });
+    // const pong = async (host: any) => {
+    //   new Promise((resolve, _) => {
+    //     try {
+    //       const { stdout, stderr } = exec(`ping ${host}`);
+    //       console.log('stdout', stdout);
+    //       console.log('stderr', stderr);
+    //       const x = {
+    //         stdout,
+    //         stderr
+    //       }
+    //       resolve(x);
+    //     } catch {
+    //       console.log('server time out');
+    //       throw Error('server time out');
+    //     }
+    //   });
 
 
-    }
-    await ping(req.get('host') === 'localhost:5001' ? 'transfer.greatdayhr.com' : req.get('host'));
+    // }
+    // await pong(req.get('host') === 'localhost:5001' ? 'transfer.greatdayhr.com' : req.get('host'));
 
     const data = {
       clientIp: req.clientIp,
@@ -114,7 +115,14 @@ router.get('/myIp', async (req: Request, res: Response) => {
       hostAddress,
       hostAddress2: iphost2,
     };
+    (async function () {
+      const result = await ping.promise.probe(req.get('host')!, {
+        timeout: 10,
+        extra: ["-i", "2"],
+      });
 
+      console.log(result);
+    })();
     res.json(data)
   } catch (e) {
     res.json(e)
