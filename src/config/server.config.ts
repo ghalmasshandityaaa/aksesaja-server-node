@@ -6,6 +6,7 @@ type ServerConfigType = {
   cors: CorsOptions;
   cookieOptions: CookieOptions;
 };
+
 const serverConfig: ServerConfigType = {
   cors: {
     credentials: true,
