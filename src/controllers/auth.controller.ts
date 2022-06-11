@@ -1,8 +1,9 @@
-import { Response, Request } from 'express';
-import { AuthService } from '../services/auth.service';
+import { Request, Response } from 'express';
+import serverConfig from '../config/server.config';
 import { SignIn, SignUp } from '~/interfaces/auth.interface';
+
 import { textDecrypt, textEncrypt } from '../helpers/helper';
-import { SECURE_COOKIES } from '../constants/auth.constant';
+import { AuthService } from '../services/auth.service';
 
 export class AuthController {
   constructor() {}
@@ -68,7 +69,7 @@ export class AuthController {
           error: result,
         });
       } else {
-        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
+        res.status(code).cookie('email', email, serverConfig.cookieOptions).json({
           message: 'Success',
           data: result,
         });
@@ -95,7 +96,7 @@ export class AuthController {
           error: result,
         });
       } else {
-        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
+        res.status(code).cookie('email', email, serverConfig.cookieOptions).json({
           message: 'Success',
           data: result,
         });
