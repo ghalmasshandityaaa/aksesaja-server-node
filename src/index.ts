@@ -38,6 +38,7 @@ app.use((req: Request, _: Response, next: NextFunction) => {
     credentials: true,
     preflightContinue: true,
     origin: req.headers.origin,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With', 'Access-Control-Allow-Origin'],
   })
   next();
 });
