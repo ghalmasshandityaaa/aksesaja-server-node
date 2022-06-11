@@ -36,6 +36,7 @@ Connection.initialize()
 app.use((req: Request, _: Response, next: NextFunction) => {
   cors({
     credentials: true,
+    preflightContinue: true,
     origin: req.headers.origin,
   })
   next();
