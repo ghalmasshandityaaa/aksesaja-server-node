@@ -2,10 +2,10 @@ import { Response, Request } from 'express';
 import { AuthService } from '../services/auth.service';
 import { SignIn, SignUp } from '~/interfaces/auth.interface';
 import { textDecrypt, textEncrypt } from '../helpers/helper';
-import { SECURE_COOKIES } from '../constants/auth.constant';
+import { COOKIES_OPTIONS } from '../constants/auth.constant';
 
 export class AuthController {
-  constructor() {}
+  constructor() { }
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -68,7 +68,7 @@ export class AuthController {
           error: result,
         });
       } else {
-        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
+        res.status(code).cookie('email', email, { ...COOKIES_OPTIONS }).json({
           message: 'Success',
           data: result,
         });
@@ -94,7 +94,7 @@ export class AuthController {
           error: result,
         });
       } else {
-        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
+        res.status(code).cookie('email', email, { ...COOKIES_OPTIONS }).json({
           message: 'Success',
           data: result,
         });
