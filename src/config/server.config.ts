@@ -1,6 +1,6 @@
 import type { CorsOptions } from 'cors';
 import type { CookieOptions } from 'express';
-import { CORS_ORIGIN, SAME_SITE_COOKIES, SECURE_COOKIES } from './../constants/auth.constant';
+import { SAME_SITE_COOKIES, SECURE_COOKIES } from './../constants/auth.constant';
 
 type ServerConfigType = {
   cors: CorsOptions;
@@ -9,7 +9,7 @@ type ServerConfigType = {
 const serverConfig: ServerConfigType = {
   cors: {
     credentials: true,
-    origin: CORS_ORIGIN,
+    origin: ['https://aksesaja-webapp-dev.vercel.app', 'http://localhost:3000'],
   },
   cookieOptions: {
     httpOnly: true,
