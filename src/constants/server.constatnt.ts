@@ -5,5 +5,5 @@ export const CORS_OPTION: CorsOptions = {
   preflightContinue: true,
   methods: ['GET', 'PUT', 'POST', 'DELETE'],
   allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept',
-  origin: ['http://localhost:3000', 'https://aksesaja-webapp-dev.vercel.app', 'https://aksesaja.vercel.app'],
+  origin: true,
 }
