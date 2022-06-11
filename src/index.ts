@@ -1,6 +1,6 @@
 /** Import dependencies */
 import cookieParser from 'cookie-parser';
-import express, { Express } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import logger from 'morgan';
 import path from 'path';
 import cors from 'cors';
@@ -10,7 +10,7 @@ import { onError, error404, clientErrorHandler, logErrors } from './helpers/serv
 import initializeCronJob from './cron/auth.cron';
 import { Config } from './helpers/config.helper';
 import * as requestIp from 'request-ip';
-import { CORS_OPTION } from './constants/server.constatnt';
+// import { CORS_OPTION } from './constants/server.constatnt';
 dotenv.config();
 
 const app: Express = express();
@@ -33,7 +33,13 @@ Connection.initialize()
   .catch((error) => console.log({ message: 'Database connection failed!', error: error.message }));
 
 /** Initialize middleware */
-app.use(cors({ ...CORS_OPTION }));
+app.use((req: Request, _: Response, next: NextFunction) => {
+  cors({
+    credentials: true,
+    origin: req.headers.origin,
+  })
+  next();
+});
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
