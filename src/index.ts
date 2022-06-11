@@ -33,15 +33,14 @@ Connection.initialize()
   .catch((error) => console.log({ message: 'Database connection failed!', error: error.message }));
 
 /** Initialize middleware */
+app.use(cors({
+  credentials: true,
+  preflightContinue: true,
+}));
 app.use((req: Request, res: Response, next: NextFunction) => {
-  cors({
-    credentials: true,
-    preflightContinue: true,
-  })
   res.header('Access-Control-Allow-Origin', req.headers.origin);
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
-  next();
   next();
 });
 app.use(logger('dev'));
