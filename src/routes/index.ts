@@ -6,32 +6,13 @@ const router = express.Router();
 /* Import routes. */
 import userRouter from './user';
 import authRouter from './auth';
+import * as requestIp from 'request-ip';
 
 /* Route Release. */
 router.use('/users', userRouter);
 router.use('/auth', authRouter);
 
-router.get('/liveness', (_, res: Response) => {
-  res.status(200).json({
-    message: 'Success',
-    data: {
-      status: 'OK',
-      time: new Date(),
-    },
-  });
-});
-
-router.get('/', (_, res: Response) => {
-  res.status(200).json({
-    message: 'Success',
-    data: {
-      nama: 'Ghalmas Shanditya Putra Agung',
-      address: 'Tangerang Selatan, Banten, Indonesia',
-    },
-  });
-});
-
-router.get('/myIp', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     let value: any;
     const x = async (host: any) => {
@@ -45,9 +26,10 @@ router.get('/myIp', async (req: Request, res: Response) => {
 
     const publicIp = value
       ? value.slice(value.indexOf('[') + 1, value.lastIndexOf(']'))
-      : req.headers['x-forwarded-for'];
+      : req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-    res.json({ publicIp });
+    const IP = publicIp || requestIp.getClientIp(req);
+    res.json({ IP });
   } catch (e) {
     res.json(e);
   }
