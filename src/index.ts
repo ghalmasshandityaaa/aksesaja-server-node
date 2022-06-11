@@ -43,14 +43,9 @@ app.use(requestIp.mw());
 
 /** Router Import */
 import indexRouter from './routes/index';
-import { COOKIES_OPTIONS, SAME_SITE_COOKIES, SECURE_COOKIES } from './constants/auth.constant';
 
 /** Routes Release */
 app.use('/api/v1/', indexRouter);
-
-console.log('SECURE_COOKIES', SECURE_COOKIES);
-console.log('SAME_SITE_COOKIES', SAME_SITE_COOKIES);
-console.log('COOKIES_OPTIONS', COOKIES_OPTIONS);
 
 /** Error Handling */
 app.use(error404);
