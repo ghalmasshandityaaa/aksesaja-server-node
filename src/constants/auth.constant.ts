@@ -7,5 +7,5 @@ export const COOKIES_OPTIONS: CookieOptions = {
   secure: SECURE_COOKIES,
   sameSite: SAME_SITE_COOKIES,
   maxAge: 1000 * 60 * 60 * 24 * 7,
-  domain: 'herokuapp.com',
+  domain: '.herokuapp.com',
 };
