@@ -33,7 +33,8 @@ Connection.initialize()
   .catch((error) => console.log({ message: 'Database connection failed!', error: error.message }));
 
 /** Initialize middleware */
-app.use(cors({ ...CORS_OPTION }));
+app.set('trust proxy', 1);
+app.use(cors({ ...CORS_OPTION }))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
