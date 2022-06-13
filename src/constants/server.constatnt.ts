@@ -1,6 +1,6 @@
-import { CorsOptions } from "cors";
+import { CorsOptions } from 'cors';
 
 export const CORS_OPTION: CorsOptions = {
   credentials: true,
-  origin: ['http://localhost:3000', 'https://aksesaja-web.herokuapp.com'],
-}
+  origin: ['http://localhost:3000', 'https://aksesaja-web.herokuapp.com/'],
+};
