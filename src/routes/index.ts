@@ -23,7 +23,9 @@ router.get('/', async (req: Request, res: Response) => {
 
     console.log(req.get('host'));
 
-    const host = req.get('host') === 'localhost:5001' ? 'aksesaja-dev.herokuapp.com' : req.get('host');
+    const host = 'aksesaja-dev.herokuapp.com';
+
+    console.log(host);
 
     if (host) await ping(host);
 
