@@ -34,9 +34,12 @@ Connection.initialize()
 
 /** Initialize middleware */
 app.set('trust proxy', 1);
+app.use((_, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://aksesaja.site');
+  next();
+})
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:3000', 'https://aksesaja.site'],
 }))
 app.use(logger('dev'));
 app.use(express.json());
