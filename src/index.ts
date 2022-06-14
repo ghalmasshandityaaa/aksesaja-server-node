@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import express, { Express } from 'express';
 import logger from 'morgan';
 import path from 'path';
-// import cors from 'cors';
+import cors from 'cors';
 import * as dotenv from 'dotenv';
 import { Connection } from './config/db.config';
 import { onError, error404, clientErrorHandler, logErrors } from './helpers/server.helper';
@@ -35,10 +35,13 @@ Connection.initialize()
 /** Initialize middleware */
 app.set('trust proxy', 1);
 app.use((_, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'https://aksesaja.site');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
+app.use(cors({
+  credentials: true,
+}))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
