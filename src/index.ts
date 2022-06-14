@@ -41,6 +41,7 @@ app.use((_, res, next) => {
 });
 app.use(cors({
   credentials: true,
+  preflightContinue: true,
 }))
 app.use(logger('dev'));
 app.use(express.json());
