@@ -9,7 +9,6 @@ import { Connection } from './config/db.config';
 import { onError, error404, clientErrorHandler, logErrors } from './helpers/server.helper';
 import initializeCronJob from './cron/auth.cron';
 import { Config } from './helpers/config.helper';
-import serverConfig from './config/server.config';
 dotenv.config();
 
 const app: Express = express();
@@ -32,7 +31,12 @@ Connection.initialize()
 
 /** Initialize middleware */
 app.set('trust proxy', 1);
-app.use(cors(serverConfig.cors));
+app.use(
+  cors({
+    credentials: true,
+    origin: ['https://aksesaja-webapp-dev.vercel.app', 'http://localhost:3000'],
+  }),
+);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

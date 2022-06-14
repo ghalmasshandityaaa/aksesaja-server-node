@@ -69,10 +69,18 @@ export class AuthController {
           error: result,
         });
       } else {
-        res.status(code).cookie('email', email, serverConfig.cookieOptions).json({
-          message: 'Success',
-          data: result,
-        });
+        res
+          .status(code)
+          .cookie('email', email, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+          })
+          .json({
+            message: 'Success',
+            data: result,
+          });
       }
     } catch (e) {
       console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
