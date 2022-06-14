@@ -33,16 +33,12 @@ Connection.initialize()
   .catch((error) => console.log({ message: 'Database connection failed!', error: error.message }));
 
 /** Initialize middleware */
-app.set('trust proxy', 1);
-app.use((_, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://aksesaja.site');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-app.use(cors({
-  credentials: true,
-  preflightContinue: true,
-}))
+app.use(
+  cors({
+    credentials: true,
+    origin: ['https://www.aksesaja.site', /\.aksesaja\.site$/],
+  }),
+)
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
