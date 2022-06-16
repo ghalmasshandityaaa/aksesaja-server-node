@@ -38,14 +38,12 @@ deploy-staging:
     name: staging
     url: https://api-dev.aksesaja.site
   before_script:
-    - which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
-    - eval $(ssh-agent -s)
-    - ssh-add <(cat $SSH_PRIVATE_KEY)
+    - 'which ssh-agent || ( apk update && apk add --no-cache openssh )'
     - mkdir -p ~/.ssh
+    - ssh-add <(cat $SSH_PRIVATE_KEY)
     - chmod 700 ~/.ssh
-    - ssh-keyscan ${SSH_STAGING} >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-    # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - eval "$(ssh-agent -s)"
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_STAGING} "export APP_IMAGE_STG=$CI_REGISTRY_IMAGE && export APP_IMAGE_STG_TAG=$TAG_IMAGE && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && cd /root/aksesaja-server && git pull && docker compose -f docker-compose.staging.yml down && docker compose -f docker-compose.staging.yml pull && docker compose -f docker-compose.staging.yml up -d"
   only:
