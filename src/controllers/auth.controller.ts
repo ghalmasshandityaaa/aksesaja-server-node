@@ -5,7 +5,7 @@ import { textDecrypt, textEncrypt } from '../helpers/helper';
 import { COOKIES_OPTIONS } from '../constants/auth.constant';
 
 export class AuthController {
-  constructor() {}
+  constructor() { }
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -68,13 +68,10 @@ export class AuthController {
           error: result,
         });
       } else {
-        res
-          .status(code)
-          .cookie('email', email, { ...COOKIES_OPTIONS })
-          .json({
-            message: 'Success',
-            data: result,
-          });
+        res.status(code).cookie('email', email, { ...COOKIES_OPTIONS }).json({
+          message: 'Success',
+          data: result,
+        });
       }
     } catch (e) {
       console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
@@ -97,13 +94,10 @@ export class AuthController {
           error: result,
         });
       } else {
-        res
-          .status(code)
-          .cookie('email', email, { ...COOKIES_OPTIONS })
-          .json({
-            message: 'Success',
-            data: result,
-          });
+        res.status(code).cookie('email', email, { ...COOKIES_OPTIONS }).json({
+          message: 'Success',
+          data: result,
+        });
       }
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });
