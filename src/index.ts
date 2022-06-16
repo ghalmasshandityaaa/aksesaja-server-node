@@ -21,7 +21,7 @@ const HOST: string = process.env.APP_HOST || '0.0.0.0';
 Connection.initialize()
   .then(() => {
     console.log('Database connected!'); /** Log if database connected */
-
+    console.log('Cron: ', Config.getBoolean('IS_ACTIVATE_CRON'));
     /** Initialize Cron Job */
     if (Config.getBoolean('IS_ACTIVATE_CRON')) {
       console.log('Cron job is running!');
