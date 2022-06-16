@@ -1,8 +1,9 @@
-import { Response, Request } from 'express';
-import { AuthService } from '../services/auth.service';
+import { Request, Response } from 'express';
 import { SignIn, SignUp } from '~/interfaces/auth.interface';
-import { textDecrypt, textEncrypt } from '../helpers/helper';
+import { AuthService } from '~/services/auth.service';
+
 import { COOKIES_OPTIONS } from '../constants/auth.constant';
+import { textDecrypt, textEncrypt } from '../helpers/helper';
 
 export class AuthController {
   constructor() {}
@@ -83,6 +84,7 @@ export class AuthController {
   }
 
   static async verifyActivationCode(req: Request, res: Response) {
+    console.log(req);
     const email: string = req.cookies.email;
     const activationCode: string = req.body.activationCode;
     try {
