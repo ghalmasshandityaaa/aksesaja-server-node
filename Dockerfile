@@ -4,15 +4,14 @@ LABEL maintainer="Ghalmas Shanditya Putra Agung <ghalmasshandityaaa@gmail.com>"
 
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm i
-COPY src ./src
-COPY tsconfig*.json ./
-RUN npm run build
+RUN npm install
+COPY . .
+RUN npm run build 
 
-FROM node:14-alpine
-# Copy node modules and build directory
-COPY --from=base ./node_modules ./node_modules
-COPY --from=base /dist /dist
-
+FROM node:12.17.0-alpine
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install --only=production
+COPY --from=0 /usr/src/app/dist ./dist
 EXPOSE 3000
-CMD ["dist/src/server.js"]
+CMD npm start
