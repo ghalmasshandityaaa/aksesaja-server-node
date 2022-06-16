@@ -38,7 +38,7 @@ deploy-staging:
     name: staging
     url: https://api-dev.aksesaja.site
   before_script:
-    - which ssh-agent || ( apk update && apk add --no-cache openssh )
+    - 'which ssh-agent || ( apk update && apk add --no-cache openssh )'
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 700 ~/.ssh/id_rsa
