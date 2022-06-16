@@ -7,7 +7,7 @@ import { MailOptionsInterface, SetLogEmailInterface } from '~/interfaces/mailer.
 import { LogMail } from '../models/log-mail';
 
 export class MailerService {
-  constructor() {}
+  constructor() { }
 
   static async sendEmail(mailOption: MailOptionsInterface) {
     try {
@@ -66,7 +66,7 @@ export class MailerService {
     let status = 'FAILED';
     try {
       /** Validation Status send email */
-      if (response.response.includes('250 2.0.0 OK')) {
+      if (response && response !== undefined && response.response.includes('250 2.0.0 OK')) {
         status = 'SUCCESS';
       }
 
