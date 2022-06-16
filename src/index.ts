@@ -36,7 +36,7 @@ Connection.initialize()
 app.use(
   cors({
     credentials: true,
-    origin: ['https://www.aksesaja.site', /\.aksesaja\.site$/],
+    origin: ['https://www.aksesaja.site', 'https://aksesaja.site', /\.aksesaja\.site$/],
   }),
 )
 app.use(logger('dev'));
