@@ -159,4 +159,17 @@ export class AuthController {
       res.status(400).json({ message: 'Error', error: e.message });
     }
   }
+
+  static async destroyCookie(req: Request, res: Response) {
+    const cookie: string = req.body.cookie;
+    try {
+      if (!cookie) throw Error('Cookie cannot be empty');
+
+      res.clearCookie('key');
+      res.end();
+    } catch (e) {
+      console.error({ service: 'AuthController.destroyCookie', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
 }
