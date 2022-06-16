@@ -11,7 +11,6 @@ export class Config {
   }
 
   static getBoolean(key: string): boolean {
-    console.log(process.env[key]);
     return process.env[key] === 'true';
   }
 

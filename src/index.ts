@@ -23,7 +23,7 @@ Connection.initialize()
     console.log('Database connected!'); /** Log if database connected */
     console.log('Cron: ', Config.getBoolean('IS_ACTIVATE_CRON'));
     /** Initialize Cron Job */
-    if (Config.getBoolean('IS_ACTIVATE_CRON')) {
+    if (Config.get('IS_ACTIVATE_CRON') === 'true') {
       console.log('Cron job is running!');
       initializeCronJob();
     } else {
