@@ -7,7 +7,7 @@ import { MailOptionsInterface, SetLogEmailInterface } from '~/interfaces/mailer.
 import { LogMail } from '../models/log-mail';
 
 export class MailerService {
-  constructor() { }
+  constructor() {}
 
   static async sendEmail(mailOption: MailOptionsInterface) {
     try {
