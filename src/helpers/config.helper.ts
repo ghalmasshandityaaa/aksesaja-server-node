@@ -11,7 +11,8 @@ export class Config {
   }
 
   static getBoolean(key: string): boolean {
-    return process.env[key] === 'true'!;
+    console.log(process.env[key]);
+    return process.env[key] === 'true';
   }
 
   static getMultiLine(key: string) {
