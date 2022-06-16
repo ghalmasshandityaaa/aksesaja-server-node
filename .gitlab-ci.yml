@@ -40,9 +40,10 @@ deploy-staging:
   before_script:
     - which ssh-agent || ( apk update && apk add --no-cache openssh )
     - mkdir -p ~/.ssh
-    - ssh-add <(cat $SSH_PRIVATE_KEY)
-    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh/id_rsa
     - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_STAGING} "export APP_IMAGE_STG=$CI_REGISTRY_IMAGE && export APP_IMAGE_STG_TAG=$TAG_IMAGE && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && cd /root/aksesaja-server && git pull && docker compose -f docker-compose.staging.yml down && docker compose -f docker-compose.staging.yml pull && docker compose -f docker-compose.staging.yml up -d"
