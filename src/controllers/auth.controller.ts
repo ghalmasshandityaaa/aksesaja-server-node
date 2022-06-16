@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import serverConfig from '../config/server.config';
 import { SignIn, SignUp } from '~/interfaces/auth.interface';
+import { AuthService } from '~/services/auth.service';
 
+import { COOKIES_OPTIONS } from '../constants/auth.constant';
 import { textDecrypt, textEncrypt } from '../helpers/helper';
-import { AuthService } from '../services/auth.service';
 
 export class AuthController {
   constructor() {}
@@ -71,12 +71,7 @@ export class AuthController {
       } else {
         res
           .status(code)
-          .cookie('email', email, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-          })
+          .cookie('email', email, { ...COOKIES_OPTIONS })
           .json({
             message: 'Success',
             data: result,
@@ -104,10 +99,13 @@ export class AuthController {
           error: result,
         });
       } else {
-        res.status(code).cookie('email', email, serverConfig.cookieOptions).json({
-          message: 'Success',
-          data: result,
-        });
+        res
+          .status(code)
+          .cookie('email', email, { ...COOKIES_OPTIONS })
+          .json({
+            message: 'Success',
+            data: result,
+          });
       }
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });
