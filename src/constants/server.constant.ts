@@ -1,4 +1,6 @@
-import { Config } from '~/helpers/config.helper';
+import { CorsOptions } from 'cors';
 
-const IS_PRODUCTION = Config.get('NODE_ENV') === 'production';
-export const CORS_ORIGIN = IS_PRODUCTION ? 'https://aksesaja-webapp-dev.vercel.app' : 'http://localhost:3000';
+export const CORS_OPTION: CorsOptions = {
+  credentials: true,
+  origin: ['https://www.aksesaja.site', 'https://aksesaja.site', /\.aksesaja\.site$/],
+};

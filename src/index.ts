@@ -10,7 +10,7 @@ import { onError, error404, clientErrorHandler, logErrors } from './helpers/serv
 import initializeCronJob from './cron/auth.cron';
 import { Config } from './helpers/config.helper';
 import * as requestIp from 'request-ip';
-import { CORS_OPTION } from './constants/server.constatnt';
+import { CORS_OPTION } from './constants/server.constant';
 dotenv.config();
 
 const app: Express = express();
