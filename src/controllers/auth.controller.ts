@@ -165,7 +165,7 @@ export class AuthController {
     try {
       if (!cookie) throw Error('Cookie cannot be empty');
 
-      res.clearCookie('key');
+      res.clearCookie(cookie);
       res.end();
     } catch (e) {
       console.error({ service: 'AuthController.destroyCookie', message: e.message, stack: e.stack });
