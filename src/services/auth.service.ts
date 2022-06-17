@@ -2,7 +2,7 @@ import { SignIn, SignUp } from '~/interfaces/auth.interface';
 import { Users } from '../models/users';
 import { Connection } from '../config/db.config';
 import moment from 'moment';
-import { generateRandomNumber, textDecrypt } from '../helpers/helper';
+import { generateRandomNumber } from '../helpers/helper';
 import { UserVerificationCode } from '../models/user-verification-code';
 import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
@@ -16,16 +16,18 @@ export class AuthService {
         .where('users.email = :email', { email: params.email })
         .getOne();
 
-      if (!getUsers) {
-        /** If users not found */
-        throw Error('Maaf email anda belum terdaftar!');
-      } else if (textDecrypt(params.password) !== textDecrypt(getUsers.password)) {
-        /** if password input and db not match */
-        throw Error('Maaf password anda salah!');
-      } else if (!getUsers.isActive) {
-        /** if account is inactive */
-        throw Error('Maaf akun anda belum aktif!');
-      }
+
+      console.log(params)
+      // if (!getUsers) {
+      //   /** If users not found */
+      //   throw Error('Maaf email anda belum terdaftar!');
+      // } else if (textDecrypt(params.password) !== textDecrypt(getUsers.password)) {
+      //   /** if password input and db not match */
+      //   throw Error('Maaf password anda salah!');
+      // } else if (!getUsers.isActive) {
+      //   /** if account is inactive */
+      //   throw Error('Maaf akun anda belum aktif!');
+      // }
 
       return { result: getUsers, code: 200 };
     } catch (e) {
