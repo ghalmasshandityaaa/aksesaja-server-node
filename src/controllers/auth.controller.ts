@@ -3,7 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { SignIn, SignUp } from '~/interfaces/auth.interface';
 import { textDecrypt, textEncrypt } from '../helpers/helper';
 import { COOKIES_OPTIONS } from '../constants/auth.constant';
-
+import * as requestIp from 'request-ip';
 export class AuthController {
   constructor() { }
 
@@ -13,6 +13,7 @@ export class AuthController {
       if (!params.email || !params.password) throw Error('Email or Password is empty');
       const { result, code } = await AuthService.signIn(params);
 
+      console.log(params.email + ' Access From : ' + requestIp.getClientIp(req))
       if (code === 200) {
         res.status(code).json({
           message: 'Success',

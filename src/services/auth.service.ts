@@ -8,7 +8,7 @@ import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
 
 export class AuthService {
-  constructor() {}
+  constructor() { }
 
   static async signIn(params: SignIn) {
     try {
