@@ -11,7 +11,7 @@ export const SignInSchema = async (params: SignIn) => {
 }
 export const SignUpSchema = async (params: SignUp) => {
   const schema = Joi.object({
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'id', 'co.id', 'ac.id'] } }).required(),
+    email: Joi.string().email().required(),
     fullName: Joi.string().required(),
     password: Joi.string().min(8).max(16).required(),
   });
@@ -21,7 +21,7 @@ export const SignUpSchema = async (params: SignUp) => {
 
 export const EmailSchema = async (email: string) => {
   const schema = Joi.object({
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'id', 'co.id', 'ac.id'] } }).required(),
+    email: Joi.string().email().required(),
   });
 
   await validate(schema, email, 'EmailSchema');
@@ -29,7 +29,7 @@ export const EmailSchema = async (email: string) => {
 
 export const VerifyActivationCodeSchema = async (params: VerifyActivationCode) => {
   const schema = Joi.object({
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'id', 'co.id', 'ac.id'] } }).required(),
+    email: Joi.string().email().required(),
     verificationCode: Joi.number().min(8).max(8).positive().required(),
   });
 
