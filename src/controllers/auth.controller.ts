@@ -56,7 +56,7 @@ export class AuthController {
       const { result, code } = await AuthService.checkAvailabilityEmail(email);
 
       /** Response */
-      ResponseSuccess(res, code, result);
+      ResponseSuccess(res, code, result, { name: 'email', value: email });
     } catch (e) {
       console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
