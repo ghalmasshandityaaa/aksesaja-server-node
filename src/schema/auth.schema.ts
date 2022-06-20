@@ -20,9 +20,7 @@ export const SignUpSchema = async (params: SignUp) => {
 }
 
 export const EmailSchema = async (email: string) => {
-  const schema = Joi.object({
-    email: Joi.string().email().required(),
-  });
+  const schema = Joi.string().email().required();
 
   await validate(schema, email, 'EmailSchema');
 }
