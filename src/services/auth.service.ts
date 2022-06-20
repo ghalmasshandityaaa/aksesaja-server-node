@@ -16,18 +16,13 @@ export class AuthService {
         .where('users.email = :email', { email: params.email })
         .getOne();
 
-
-      console.log(params)
-      // if (!getUsers) {
-      //   /** If users not found */
-      //   throw Error('Maaf email anda belum terdaftar!');
-      // } else if (textDecrypt(params.password) !== textDecrypt(getUsers.password)) {
-      //   /** if password input and db not match */
-      //   throw Error('Maaf password anda salah!');
-      // } else if (!getUsers.isActive) {
-      //   /** if account is inactive */
-      //   throw Error('Maaf akun anda belum aktif!');
-      // }
+      if (!getUsers) {
+        /** If users not found */
+        throw Error('Maaf email anda belum terdaftar!');
+      } else if (!getUsers.isActive) {
+        /** if account is inactive */
+        throw Error('Maaf akun anda belum aktif!');
+      }
 
       return { result: getUsers, code: 200 };
     } catch (e) {
