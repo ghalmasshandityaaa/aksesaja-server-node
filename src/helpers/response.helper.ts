@@ -14,24 +14,23 @@ export const ResponseSuccess = (res: any, code: number, result: any, cookies?: a
 
   if (SUCCESS_CODE.includes(code)) {
     if (cookies) {
-      res.status(code)
+      res
+        .status(code)
         .cookie(cookies.name, cookies.value, { ...COOKIES_OPTIONS })
         .json({
           message: 'Success',
           data: result,
         });
     } else {
-      res.status(code)
-        .json({
-          message: 'Success',
-          data: result,
-        });
+      res.status(code).json({
+        message: 'Success',
+        data: result,
+      });
     }
   } else {
-    res.status(code)
-      .json({
-        message: 'Error',
-        error: result,
-      });
+    res.status(code).json({
+      message: 'Error',
+      error: result,
+    });
   }
-}
+};

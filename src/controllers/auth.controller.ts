@@ -6,8 +6,9 @@ import * as requestIp from 'request-ip';
 import { EmailSchema, SignInSchema, SignUpSchema, VerifyActivationCodeSchema } from '../schema/auth.schema';
 import { ResponseSuccess } from '../helpers/response.helper';
 import { VerifyActivationCode } from '../interfaces/auth.interface';
+
 export class AuthController {
-  constructor() { }
+  constructor() {}
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -32,7 +33,7 @@ export class AuthController {
     const email: string = req.cookies.email;
     try {
       /** Validate */
-      const schema = { ...params, email }
+      const schema = { ...params, email };
       await SignUpSchema(schema);
 
       /** Logic Service */
@@ -132,8 +133,7 @@ export class AuthController {
     try {
       if (!cookie) throw Error('Cookie cannot be empty');
 
-      res.clearCookie(cookie);
-      res.end();
+      res.clearCookie(cookie).end();
     } catch (e) {
       console.error({ service: 'AuthController.destroyCookie', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
