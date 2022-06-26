@@ -2,12 +2,12 @@ import { Config } from './config.helper';
 import * as CryptoJS from 'crypto-js';
 
 export function textEncrypt(text: string) {
-  const secretKey = Config.get('PRIVATE_KEY')!;
+  const secretKey = Config.get('KEY')!;
   return CryptoJS.AES.encrypt(text, secretKey).toString();
 }
 
 export function textDecrypt(encryptedtext: string) {
-  const secretKey = Config.get('PRIVATE_KEY')!;
+  const secretKey = Config.get('KEY')!;
   const bytes = CryptoJS.AES.decrypt(encryptedtext, secretKey);
   return bytes.toString(CryptoJS.enc.Utf8);
 }
