@@ -17,6 +17,9 @@ export class Users extends BaseEntity {
   @Column({ name: 'password' })
   password: string;
 
+  @Column({ name: 'refresh_token' })
+  refreshToken: string;
+
   @Column({ name: 'is_active' })
   isActive: boolean;
 

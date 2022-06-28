@@ -6,6 +6,7 @@ import { generateRandomNumber } from '../helpers/helper';
 import { UserVerificationCode } from '../models/user-verification-code';
 import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
+import { signAccessToken } from './jwt.service';
 
 export class AuthService {
   constructor() {}
@@ -24,7 +25,16 @@ export class AuthService {
         throw Error('Maaf akun anda belum aktif!');
       }
 
-      return { result: getUsers, code: 200 };
+      const accessToken = await signAccessToken(getUsers);
+      const refreshToken = await signAccessToken(getUsers);
+
+      const result = {
+        users: getUsers,
+        accessToken,
+        refreshToken,
+      };
+
+      return { result, code: 200 };
     } catch (e) {
       console.error({ service: 'AuthService.signIn', message: e.message, stack: e.stack });
       throw e;

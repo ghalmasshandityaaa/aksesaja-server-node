@@ -1,8 +1,9 @@
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import { UserService } from '../services/user.service';
+import { AuthRequest } from '../middlewares/authorization';
 
 export class UserController {
-  static async getAllUsers(_: Request, res: Response) {
+  static async getAllUsers(_: AuthRequest, res: Response) {
     try {
       const result = await UserService.getAllUsers();
 

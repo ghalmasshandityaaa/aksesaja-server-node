@@ -4,7 +4,7 @@ import { SignIn, SignUp, VerifyActivationCode } from '~/interfaces/auth.interfac
 export const SignInSchema = async (params: SignIn) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
-    password: Joi.string().min(8).max(16).required(),
+    password: Joi.string().required(),
   });
 
   await validate(schema, params, 'SignInSchema');

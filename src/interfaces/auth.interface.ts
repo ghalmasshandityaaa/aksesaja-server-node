@@ -12,3 +12,7 @@ export interface VerifyActivationCode {
   email: string;
   verificationCode: string;
 }
+
+export interface Auth {
+  userId: string;
+}
