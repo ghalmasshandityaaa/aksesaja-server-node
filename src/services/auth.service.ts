@@ -6,6 +6,7 @@ import { generateRandomNumber } from '../helpers/helper';
 import { UserVerificationCode } from '../models/user-verification-code';
 import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
+import { signAccessToken } from './jwt.service';
 
 export class AuthService {
   constructor() { }
@@ -14,6 +15,11 @@ export class AuthService {
     try {
       const getUsers = await Users.createQueryBuilder('users')
         .where('users.email = :email', { email: params.email })
+        .select([
+          'users.userId',
+          'users.password',
+          'users.email',
+        ])
         .getOne();
 
       if (!getUsers) {
@@ -24,11 +30,16 @@ export class AuthService {
         throw Error('Maaf password anda salah!');
       }
 
-      /** Convert to moment date */
-      getUsers.createdAt = moment.utc(getUsers.createdAt).format('YYYY-MM-DD HH:mm:ss');
-      if (getUsers.updatedAt) moment.utc(getUsers.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+      /** Generate access token */
+      const accessToken = await signAccessToken(getUsers);
+      const refreshToken = await signAccessToken(getUsers);
 
-      return { result: getUsers, code: 200 };
+      const result = {
+        accessToken,
+        refreshToken,
+      };
+
+      return { result, code: 200 };
     } catch (e) {
       console.error({ service: 'AuthService.signIn', message: e.message, stack: e.stack });
       throw e;

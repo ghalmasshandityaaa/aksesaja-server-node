@@ -6,6 +6,8 @@ import * as requestIp from 'request-ip';
 import { EmailSchema, SignInSchema, SignUpSchema, VerifyActivationCodeSchema } from '../schema/auth.schema';
 import { ResponseSuccess } from '../helpers/response.helper';
 import { VerifyActivationCode } from '../interfaces/auth.interface';
+import { verifyRefreshToken, signAccessToken } from '../services/jwt.service';
+
 export class AuthController {
   constructor() { }
 
@@ -20,7 +22,10 @@ export class AuthController {
 
       console.log(params.email + ' Access From : ' + requestIp.getClientIp(req));
       /** Response */
-      ResponseSuccess(res, code, result);
+      ResponseSuccess(res, code, result, [
+        { name: 'accessToken', value: result.accessToken },
+        { name: 'refreshToken', value: result.refreshToken },
+      ]);
     } catch (e) {
       console.error({ service: 'AuthController.signIn', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -32,7 +37,7 @@ export class AuthController {
     const email: string = req.cookies.email;
     try {
       /** Validate */
-      const schema = { ...params, email }
+      const schema = { ...params, email };
       await SignUpSchema(schema);
 
       /** Logic Service */
@@ -132,10 +137,23 @@ export class AuthController {
     try {
       if (!cookie) throw Error('Cookie cannot be empty');
 
-      res.clearCookie(cookie);
-      res.end();
+      res.clearCookie(cookie).end();
     } catch (e) {
       console.error({ service: 'AuthController.destroyCookie', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
+
+  static async refreshToken(req: Request, res: Response) {
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) throw new Error('Invalid token');
+    try {
+      const users = await verifyRefreshToken(refreshToken);
+      const accessToken = await signAccessToken({ userId: users.userId, email: users.email });
+
+      ResponseSuccess(res, 200, { accessToken }, { name: 'accessToken', value: accessToken });
+    } catch (e) {
+      console.error({ service: 'AuthController.refreshToken', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
     }
   }
