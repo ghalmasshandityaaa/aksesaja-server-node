@@ -13,10 +13,12 @@ export const ResponseSuccess = (res: any, code: number, result: any, cookies?: a
   const SUCCESS_CODE = [200, 201, 204];
 
   if (SUCCESS_CODE.includes(code)) {
-    if (cookies.length) {
+    if (cookies.length > 1) {
       for (let i = 0; i < cookies.length; i++) {
         res.cookie(cookies[i].name, cookies[i].value, COOKIES_OPTIONS);
       }
+    } else {
+      res.cookie(cookies.name, cookies.value, COOKIES_OPTIONS);
     }
     res.status(code).json({
       message: 'Success',

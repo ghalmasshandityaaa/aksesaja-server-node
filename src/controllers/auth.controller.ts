@@ -9,7 +9,7 @@ import { VerifyActivationCode } from '../interfaces/auth.interface';
 import { verifyRefreshToken, signAccessToken } from '../services/jwt.service';
 
 export class AuthController {
-  constructor() { }
+  constructor() {}
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;

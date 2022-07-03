@@ -9,17 +9,13 @@ import { MailOptionsInterface } from '../interfaces/mailer.interface';
 import { signAccessToken } from './jwt.service';
 
 export class AuthService {
-  constructor() { }
+  constructor() {}
 
   static async signIn(params: SignIn) {
     try {
       const getUsers = await Users.createQueryBuilder('users')
         .where('users.email = :email', { email: params.email })
-        .select([
-          'users.userId',
-          'users.password',
-          'users.email',
-        ])
+        .select(['users.userId', 'users.password', 'users.email'])
         .getOne();
 
       if (!getUsers) {
