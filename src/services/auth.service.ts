@@ -19,10 +19,14 @@ export class AuthService {
       if (!getUsers) {
         /** If users not found */
         throw Error('Maaf email anda belum terdaftar!');
-      } else if (!getUsers.isActive) {
-        /** if account is inactive */
-        throw Error('Maaf akun anda belum aktif!');
+      } else if (getUsers.password !== params.password) {
+        /** If password not match */
+        throw Error('Maaf password anda salah!');
       }
+
+      /** Convert to moment date */
+      getUsers.createdAt = moment.utc(getUsers.createdAt).format('YYYY-MM-DD HH:mm:ss');
+      if (getUsers.updatedAt) moment.utc(getUsers.updatedAt).format('YYYY-MM-DD HH:mm:ss');
 
       return { result: getUsers, code: 200 };
     } catch (e) {
