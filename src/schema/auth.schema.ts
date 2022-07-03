@@ -28,7 +28,7 @@ export const EmailSchema = async (email: string) => {
 export const VerifyActivationCodeSchema = async (params: VerifyActivationCode) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
-    verificationCode: Joi.number().min(6).max(6).positive().required(),
+    verificationCode: Joi.number().positive().required(),
   });
 
   await validate(schema, params, 'VerifyActivationCodeSchema');

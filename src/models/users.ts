@@ -26,9 +26,9 @@ export class Users extends BaseEntity {
   @Column({ name: 'created_at' })
   createdAt: string;
 
-  @Column({ name: 'updated_at' })
+  @Column({ name: 'updated_at', nullable: true })
   updatedAt: string;
 
-  @Column({ name: 'updated_by' })
+  @Column({ name: 'updated_by', nullable: true })
   updatedBy: string;
 }
