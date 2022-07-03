@@ -9,7 +9,7 @@ import { VerifyActivationCode } from '../interfaces/auth.interface';
 import { verifyRefreshToken, signAccessToken } from '../services/jwt.service';
 
 export class AuthController {
-  constructor() {}
+  constructor() { }
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -149,7 +149,7 @@ export class AuthController {
     if (!refreshToken) throw new Error('Invalid token');
     try {
       const users = await verifyRefreshToken(refreshToken);
-      const accessToken = await signAccessToken({ userId: users.userId });
+      const accessToken = await signAccessToken({ userId: users.userId, email: users.email });
 
       ResponseSuccess(res, 200, { accessToken }, { name: 'accessToken', value: accessToken });
     } catch (e) {

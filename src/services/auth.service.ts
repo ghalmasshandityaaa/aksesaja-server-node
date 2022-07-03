@@ -15,6 +15,11 @@ export class AuthService {
     try {
       const getUsers = await Users.createQueryBuilder('users')
         .where('users.email = :email', { email: params.email })
+        .select([
+          'users.userId',
+          'users.password',
+          'users.email',
+        ])
         .getOne();
 
       if (!getUsers) {
@@ -25,6 +30,7 @@ export class AuthService {
         throw Error('Maaf password anda salah!');
       }
 
+      /** Generate access token */
       const accessToken = await signAccessToken(getUsers);
       const refreshToken = await signAccessToken(getUsers);
 

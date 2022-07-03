@@ -15,4 +15,5 @@ export interface VerifyActivationCode {
 
 export interface Auth {
   userId: string;
+  email: string;
 }

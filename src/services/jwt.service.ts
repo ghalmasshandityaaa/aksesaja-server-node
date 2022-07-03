@@ -1,5 +1,5 @@
 import createError from 'http-errors';
-// import { Users } from '../models/users';
+import { Users } from '../models/users';
 import { Auth } from '../interfaces/auth.interface';
 import { sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
 import { PUBLIC_KEY, PRIVATE_KEY } from '../constants/auth.constant';
@@ -12,7 +12,7 @@ export const signAccessToken = async (params: Auth) => {
     expiresIn: '15m',
     algorithm: 'RS256',
   };
-  return sign(params, PRIVATE_KEY, signOption);
+  return sign({ userId: params.userId, email: params.email }, PRIVATE_KEY, signOption);
 };
 
 export const signRefreshToken = async (params: Auth) => {
@@ -23,7 +23,7 @@ export const signRefreshToken = async (params: Auth) => {
     expiresIn: '1y',
     algorithm: 'RS256',
   };
-  return sign(params, PRIVATE_KEY, signOption);
+  return sign({ userId: params.userId, email: params.email }, PRIVATE_KEY, signOption);
 };
 
 export const verifyRefreshToken = async (token: string) => {
@@ -39,12 +39,12 @@ export const verifyRefreshToken = async (token: string) => {
 
     const auth = verify(token, PUBLIC_KEY, verifyOptions) as Auth;
 
-    // const checkUsers = await Users.createQueryBuilder('users')
-    //   .select('users.userId')
-    //   .where('users.userId = :userId', { userId: auth.userId })
-    //   .getOne();
+    const checkUsers = await Users.createQueryBuilder('users')
+      .select('users.userId')
+      .where('users.userId = :userId', { userId: auth.userId })
+      .getOne();
 
-    // if (!checkUsers) return new createError.Unauthorized('Unauthorized!');
+    if (!checkUsers) return new createError.Unauthorized('Unauthorized!');
 
     return auth;
   } catch (e) {
