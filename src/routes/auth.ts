@@ -10,6 +10,7 @@ router.post('/signUp', AuthController.signUp);
 router.post('/verifyActivationCode', AuthController.verifyActivationCode);
 router.post('/checkAvailabilityEmail', AuthController.checkAvailabilityEmail);
 router.post('/resendActivationCode', AuthController.resendActivationCode);
+router.get('/destroyCookie', AuthController.destroyCookie);
 router.post('/encrypt', AuthController.encrypt);
 router.post('/decrypt', AuthController.decrypt);
 

@@ -2,32 +2,40 @@ import { SignIn, SignUp } from '~/interfaces/auth.interface';
 import { Users } from '../models/users';
 import { Connection } from '../config/db.config';
 import moment from 'moment';
-import { generateRandomNumber, textDecrypt } from '../helpers/helper';
+import { generateRandomNumber } from '../helpers/helper';
 import { UserVerificationCode } from '../models/user-verification-code';
 import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
+import { signAccessToken } from './jwt.service';
 
 export class AuthService {
-  constructor() { }
+  constructor() {}
 
   static async signIn(params: SignIn) {
     try {
       const getUsers = await Users.createQueryBuilder('users')
         .where('users.email = :email', { email: params.email })
+        .select(['users.userId', 'users.password', 'users.email'])
         .getOne();
 
       if (!getUsers) {
         /** If users not found */
         throw Error('Maaf email anda belum terdaftar!');
-      } else if (textDecrypt(params.password) !== textDecrypt(getUsers.password)) {
-        /** if password input and db not match */
+      } else if (getUsers.password !== params.password) {
+        /** If password not match */
         throw Error('Maaf password anda salah!');
-      } else if (!getUsers.isActive) {
-        /** if account is inactive */
-        throw Error('Maaf akun anda belum aktif!');
       }
 
-      return { result: getUsers, code: 200 };
+      /** Generate access token */
+      const accessToken = await signAccessToken(getUsers);
+      const refreshToken = await signAccessToken(getUsers);
+
+      const result = {
+        accessToken,
+        refreshToken,
+      };
+
+      return { result, code: 200 };
     } catch (e) {
       console.error({ service: 'AuthService.signIn', message: e.message, stack: e.stack });
       throw e;

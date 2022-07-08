@@ -2,7 +2,11 @@ import { Response, Request } from 'express';
 import { AuthService } from '../services/auth.service';
 import { SignIn, SignUp } from '~/interfaces/auth.interface';
 import { textDecrypt, textEncrypt } from '../helpers/helper';
-import { SECURE_COOKIES } from '../constants/auth.constant';
+import * as requestIp from 'request-ip';
+import { EmailSchema, SignInSchema, SignUpSchema, VerifyActivationCodeSchema } from '../schema/auth.schema';
+import { ResponseSuccess } from '../helpers/response.helper';
+import { VerifyActivationCode } from '../interfaces/auth.interface';
+import { verifyRefreshToken, signAccessToken } from '../services/jwt.service';
 
 export class AuthController {
   constructor() {}
@@ -10,19 +14,18 @@ export class AuthController {
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
     try {
-      if (!params.email || !params.password) throw Error('Email or Password is empty');
+      /** Validate */
+      await SignInSchema(params);
+
+      /** Logic Service */
       const { result, code } = await AuthService.signIn(params);
 
-      if (code === 200) {
-        res.status(code).json({
-          message: 'Success',
-          data: result,
-        });
-      } else {
-        res.status(code).json({
-          message: result,
-        });
-      }
+      console.log(params.email + ' Access From : ' + requestIp.getClientIp(req));
+      /** Response */
+      ResponseSuccess(res, code, result, [
+        { name: 'accessToken', value: result.accessToken },
+        { name: 'refreshToken', value: result.refreshToken },
+      ]);
     } catch (e) {
       console.error({ service: 'AuthController.signIn', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -33,23 +36,15 @@ export class AuthController {
     const params: SignUp = req.body;
     const email: string = req.cookies.email;
     try {
-      if (!email) throw Error('Email is empty');
-      else if (!params.password) throw Error('required');
-      else if (!params.fullName) throw Error('fullName is required');
+      /** Validate */
+      const schema = { ...params, email };
+      await SignUpSchema(schema);
 
+      /** Logic Service */
       const { result, code } = await AuthService.signUp(params, email);
 
-      if (code !== 201) {
-        res.status(code).json({
-          message: 'Error',
-          error: result,
-        });
-      } else {
-        res.status(code).json({
-          message: 'Success',
-          data: result,
-        });
-      }
+      /** Response */
+      ResponseSuccess(res, code, result);
     } catch (e) {
       console.error({ service: 'AuthController.signUp', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -59,20 +54,14 @@ export class AuthController {
   static async checkAvailabilityEmail(req: Request, res: Response) {
     const email: string = req.body.email;
     try {
-      if (!email) throw Error('Email is empty');
+      /** Validate */
+      await EmailSchema(email);
+
+      /** Logic Service */
       const { result, code } = await AuthService.checkAvailabilityEmail(email);
 
-      if (code !== 200) {
-        res.status(code).json({
-          message: 'Error',
-          error: result,
-        });
-      } else {
-        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
-          message: 'Success',
-          data: result,
-        });
-      }
+      /** Response */
+      ResponseSuccess(res, code, result, { name: 'email', value: email });
     } catch (e) {
       console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -81,24 +70,17 @@ export class AuthController {
 
   static async verifyActivationCode(req: Request, res: Response) {
     const email: string = req.cookies.email;
-    const activationCode: string = req.body.activationCode;
+    const verificationCode: string = req.body.activationCode;
     try {
-      if (!email) throw Error('Email or Password is empty');
-      else if (!activationCode) throw Error('Activation Code is empty');
+      /** Validate */
+      const schema: VerifyActivationCode = { email, verificationCode };
+      await VerifyActivationCodeSchema(schema);
 
-      const { result, code } = await AuthService.verifyActivationCode(email, activationCode);
+      /** Logic Service */
+      const { result, code } = await AuthService.verifyActivationCode(email, verificationCode);
 
-      if (code !== 200) {
-        res.status(code).json({
-          message: 'Error',
-          error: result,
-        });
-      } else {
-        res.status(code).cookie('email', email, { httpOnly: true, secure: SECURE_COOKIES }).json({
-          message: 'Success',
-          data: result,
-        });
-      }
+      /** Response */
+      ResponseSuccess(res, code, result, { name: 'email', value: email });
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -108,20 +90,14 @@ export class AuthController {
   static async resendActivationCode(req: Request, res: Response) {
     const email: string = req.cookies.email;
     try {
-      if (!email) throw Error('Email is empty');
+      /** Validate */
+      await EmailSchema(email);
+
+      /** Logic Service */
       const { result, code } = await AuthService.resendActivationCode(email);
 
-      if (code !== 200) {
-        res.status(code).json({
-          message: 'Error',
-          error: result,
-        });
-      } else {
-        res.status(code).json({
-          message: 'Success',
-          data: result,
-        });
-      }
+      /** Response */
+      ResponseSuccess(res, code, result);
     } catch (e) {
       console.error({ service: 'AuthController.resendActivationCode', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -134,10 +110,8 @@ export class AuthController {
       if (!text) throw Error('Text is empty');
       const encrypt = textEncrypt(text);
 
-      res.status(200).json({
-        message: 'Success',
-        encrypted: encrypt,
-      });
+      /** Response */
+      ResponseSuccess(res, 200, encrypt);
     } catch (e) {
       console.error({ service: 'AuthController.encrypt', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
@@ -150,12 +124,36 @@ export class AuthController {
       if (!text) throw Error('Text is empty');
       const decrypt = textDecrypt(text);
 
-      res.status(200).json({
-        message: 'Success',
-        decrypted: decrypt,
-      });
+      /** Response */
+      ResponseSuccess(res, 200, decrypt);
     } catch (e) {
       console.error({ service: 'AuthController.decrypt', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
+
+  static async destroyCookie(req: Request, res: Response) {
+    const cookie: string = req.body.cookie;
+    try {
+      if (!cookie) throw Error('Cookie cannot be empty');
+
+      res.clearCookie(cookie).end();
+    } catch (e) {
+      console.error({ service: 'AuthController.destroyCookie', message: e.message, stack: e.stack });
+      res.status(400).json({ message: 'Error', error: e.message });
+    }
+  }
+
+  static async refreshToken(req: Request, res: Response) {
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) throw new Error('Invalid token');
+    try {
+      const users = await verifyRefreshToken(refreshToken);
+      const accessToken = await signAccessToken({ userId: users.userId, email: users.email });
+
+      ResponseSuccess(res, 200, { accessToken }, { name: 'accessToken', value: accessToken });
+    } catch (e) {
+      console.error({ service: 'AuthController.refreshToken', message: e.message, stack: e.stack });
       res.status(400).json({ message: 'Error', error: e.message });
     }
   }
