@@ -4,12 +4,12 @@ import { SignIn, SignUp } from '~/interfaces/auth.interface';
 import { textDecrypt, textEncrypt } from '../helpers/helper';
 import * as requestIp from 'request-ip';
 import { EmailSchema, SignInSchema, SignUpSchema, VerifyActivationCodeSchema } from '../schema/auth.schema';
-import { ResponseSuccess } from '../helpers/response.helper';
+import { ResponseError, ResponseSuccess } from '../helpers/response.helper';
 import { VerifyActivationCode } from '../interfaces/auth.interface';
 import { verifyRefreshToken, signAccessToken } from '../services/jwt.service';
 
 export class AuthController {
-  constructor() {}
+  constructor() { }
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -28,7 +28,7 @@ export class AuthController {
       ]);
     } catch (e) {
       console.error({ service: 'AuthController.signIn', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 
@@ -47,7 +47,7 @@ export class AuthController {
       ResponseSuccess(res, code, result);
     } catch (e) {
       console.error({ service: 'AuthController.signUp', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 
@@ -64,7 +64,7 @@ export class AuthController {
       ResponseSuccess(res, code, result, { name: 'email', value: email });
     } catch (e) {
       console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 
@@ -83,7 +83,7 @@ export class AuthController {
       ResponseSuccess(res, code, result, { name: 'email', value: email });
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 
@@ -100,7 +100,7 @@ export class AuthController {
       ResponseSuccess(res, code, result);
     } catch (e) {
       console.error({ service: 'AuthController.resendActivationCode', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 
@@ -114,7 +114,7 @@ export class AuthController {
       ResponseSuccess(res, 200, encrypt);
     } catch (e) {
       console.error({ service: 'AuthController.encrypt', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 
@@ -128,7 +128,7 @@ export class AuthController {
       ResponseSuccess(res, 200, decrypt);
     } catch (e) {
       console.error({ service: 'AuthController.decrypt', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 
@@ -140,7 +140,7 @@ export class AuthController {
       res.clearCookie(cookie).end();
     } catch (e) {
       console.error({ service: 'AuthController.destroyCookie', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 
@@ -154,7 +154,7 @@ export class AuthController {
       ResponseSuccess(res, 200, { accessToken }, { name: 'accessToken', value: accessToken });
     } catch (e) {
       console.error({ service: 'AuthController.refreshToken', message: e.message, stack: e.stack });
-      res.status(400).json({ message: 'Error', error: e.message });
+      ResponseError(res, 400, e);
     }
   }
 }

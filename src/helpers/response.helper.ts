@@ -38,6 +38,21 @@ export const ResponseSuccess = (res: any, code: number, result: any, cookies?: a
   }
 };
 
+export const ResponseError = (res: any, code: number, error: any) => {
+  let data: any = {
+    message: 'Error',
+    error: error.message,
+  }
+  if (error.validationError && error.validationError !== undefined) {
+    data = {
+      message: 'Error Validation',
+      error: error.message.message,
+      details: error.message.details,
+    }
+  };
+  res.status(code).json(data);
+}
+
 export const ResponseErrorValidation = async (error: any) => {
   throw {
     message: {
@@ -51,5 +66,6 @@ export const ResponseErrorValidation = async (error: any) => {
       }),
     },
     stack: error.stack,
+    validationError: true,
   };
 };
