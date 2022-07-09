@@ -14,17 +14,17 @@ export const ResponseSuccess = (res: any, code: number, result: any, cookies?: a
 
   if (SUCCESS_CODE.includes(code)) {
     if (cookies) {
-      console.log(cookies)
+      console.log(cookies);
       if (cookies.length > 1) {
         for (let i = 0; i < cookies.length; i++) {
           res.cookie(cookies[i].name, cookies[i].value, COOKIES_OPTIONS);
         }
       } else {
-        console.log(cookies)
+        console.log(cookies);
         res.cookie(cookies.name, cookies.value, COOKIES_OPTIONS);
       }
     } else {
-      console.log(1, cookies)
+      console.log(1, cookies);
     }
     res.status(code).json({
       message: 'Success',
@@ -36,4 +36,20 @@ export const ResponseSuccess = (res: any, code: number, result: any, cookies?: a
       error: result,
     });
   }
+};
+
+export const ResponseErrorValidation = async (error: any) => {
+  throw {
+    message: {
+      message: error.message,
+      details: error.details.map((data: any) => {
+        data.path = data.path.toString();
+        data['value'] = data.context ? (data.context.value ? data.context.value : null) : null;
+        delete data.type;
+        delete data.context;
+        return data;
+      }),
+    },
+    stack: error.stack,
+  };
 };
