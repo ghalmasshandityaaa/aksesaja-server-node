@@ -9,22 +9,14 @@ export const responseError = (message: string, error: string) => {
   return { message, error };
 };
 
-export const ResponseSuccess = (res: any, code: number, result: any, cookies?: any) => {
+export const ResponseSuccess = (res: any, code: number, result: any = null, cookies?: any) => {
   const SUCCESS_CODE = [200, 201, 204];
 
   if (SUCCESS_CODE.includes(code)) {
-    if (cookies) {
-      console.log(cookies);
-      if (cookies.length > 1) {
-        for (let i = 0; i < cookies.length; i++) {
-          res.cookie(cookies[i].name, cookies[i].value, COOKIES_OPTIONS);
-        }
-      } else {
-        console.log(cookies);
-        res.cookie(cookies.name, cookies.value, COOKIES_OPTIONS);
+    if (cookies && cookies.length) {
+      for (let i = 0; i < cookies.length; i++) {
+        res.cookie(cookies[i].name, cookies[i].value, COOKIES_OPTIONS);
       }
-    } else {
-      console.log(1, cookies);
     }
     res.status(code).json({
       message: 'Success',
@@ -42,16 +34,16 @@ export const ResponseError = (res: any, code: number, error: any) => {
   let data: any = {
     message: 'Error',
     error: error.message,
-  }
+  };
   if (error.validationError && error.validationError !== undefined) {
     data = {
       message: 'Error Validation',
       error: error.message.message,
       details: error.message.details,
-    }
-  };
+    };
+  }
   res.status(code).json(data);
-}
+};
 
 export const ResponseErrorValidation = async (error: any) => {
   throw {

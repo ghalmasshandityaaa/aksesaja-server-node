@@ -9,7 +9,7 @@ import { VerifyActivationCode } from '../interfaces/auth.interface';
 import { verifyRefreshToken, signAccessToken } from '../services/jwt.service';
 
 export class AuthController {
-  constructor() { }
+  constructor() {}
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -22,10 +22,7 @@ export class AuthController {
 
       console.log(params.email + ' Access From : ' + requestIp.getClientIp(req));
       /** Response */
-      ResponseSuccess(res, code, result, [
-        { name: 'accessToken', value: result.accessToken },
-        { name: 'refreshToken', value: result.refreshToken },
-      ]);
+      ResponseSuccess(res, code, result.accessToken, [{ name: 'refreshToken', value: result.refreshToken }]);
     } catch (e) {
       console.error({ service: 'AuthController.signIn', message: e.message, stack: e.stack });
       ResponseError(res, 400, e);
@@ -61,7 +58,7 @@ export class AuthController {
       const { result, code } = await AuthService.checkAvailabilityEmail(email);
 
       /** Response */
-      ResponseSuccess(res, code, result, { name: 'email', value: email });
+      ResponseSuccess(res, code, result, [{ name: 'email', value: email }]);
     } catch (e) {
       console.error({ service: 'AuthController.checkAvailabilityEmail', message: e.message, stack: e.stack });
       ResponseError(res, 400, e);
@@ -80,7 +77,7 @@ export class AuthController {
       const { result, code } = await AuthService.verifyActivationCode(email, verificationCode);
 
       /** Response */
-      ResponseSuccess(res, code, result, { name: 'email', value: email });
+      ResponseSuccess(res, code, result, [{ name: 'email', value: email }]);
     } catch (e) {
       console.error({ service: 'AuthController.verifyActivationCode', message: e.message, stack: e.stack });
       ResponseError(res, 400, e);
@@ -137,7 +134,8 @@ export class AuthController {
     try {
       if (!cookie) throw Error('Cookie cannot be empty');
 
-      res.clearCookie(cookie).end();
+      res.clearCookie(cookie);
+      ResponseSuccess(res, 200, 'Cookie has been deleted');
     } catch (e) {
       console.error({ service: 'AuthController.destroyCookie', message: e.message, stack: e.stack });
       ResponseError(res, 400, e);
@@ -151,9 +149,24 @@ export class AuthController {
       const users = await verifyRefreshToken(refreshToken);
       const accessToken = await signAccessToken({ userId: users.userId, email: users.email });
 
-      ResponseSuccess(res, 200, { accessToken }, { name: 'accessToken', value: accessToken });
+      ResponseSuccess(res, 200, { accessToken }, [{ name: 'accessToken', value: accessToken }]);
     } catch (e) {
       console.error({ service: 'AuthController.refreshToken', message: e.message, stack: e.stack });
+      ResponseError(res, 400, e);
+    }
+  }
+
+  static async logout(req: Request, res: Response) {
+    const cookies: any = req.cookies;
+    try {
+      const arraysOfCookies: any[] = Object.keys(cookies);
+      for (let i: number = 0; i < arraysOfCookies.length; i++) {
+        res.clearCookie(arraysOfCookies[i]);
+      }
+
+      ResponseSuccess(res, 200, 'Logout success');
+    } catch (e) {
+      console.error({ service: 'AuthController.logout', message: e.message, stack: e.stack });
       ResponseError(res, 400, e);
     }
   }

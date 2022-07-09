@@ -13,5 +13,7 @@ router.post('/resendActivationCode', AuthController.resendActivationCode);
 router.get('/destroyCookie', AuthController.destroyCookie);
 router.post('/encrypt', AuthController.encrypt);
 router.post('/decrypt', AuthController.decrypt);
+router.get('/logout', AuthController.logout);
+router.post('/destroyCookie', AuthController.destroyCookie);
 
 export default router;
