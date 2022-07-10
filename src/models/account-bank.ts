@@ -8,7 +8,7 @@ export enum StatusAccountBank {
 
 @Entity('users')
 export class Users extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'account_bank_id' })
+  @PrimaryGeneratedColumn({ name: 'account_bank_id' })
   accountBankId: string;
 
   @Column({ name: 'user_id' })

@@ -23,13 +23,30 @@ const AuthMiddleware = async (req: AuthRequest, res: Response, next: NextFunctio
       algorithms: ['RS256'],
     };
 
-    const auth = verify(token, PUBLIC_KEY, verifyOptions) as Auth;
+    const auth = verify(token, PUBLIC_KEY, verifyOptions) as any;
     const checkUsers = await Users.createQueryBuilder('users')
       .select('users.userId')
       .where('users.userId = :userId', { userId: auth.userId })
       .getOne();
 
+    /** validation users */
     if (!checkUsers) return res.status(401).json({ message: 'Error', error: 'Unauthorized' });
+
+    /** Validation aksesaja token */
+    let error: boolean = false;
+    if (auth.aud !== 'https://aksesaja.site' || auth.iss !== 'Aksesaja' || auth.sub !== 'aksesaja.official@gmail.com')
+      error = true;
+
+    if (!error) {
+      delete auth.iat;
+      delete auth.exp;
+      delete auth.aud;
+      delete auth.iss;
+      delete auth.sub;
+    } else {
+      throw Error('Unauthorized');
+    }
+
     req.auth = auth;
     return next();
   } catch (err) {
@@ -40,7 +57,7 @@ const AuthMiddleware = async (req: AuthRequest, res: Response, next: NextFunctio
         ? 'Token Is Expired'
         : err.message;
     console.log('AuthMiddleware', message);
-    return res.status(401).json({ message: 'Error', error: 'Unauthorized' });
+    return res.status(401).json({ message: 'Error', error: message });
   }
 };
 

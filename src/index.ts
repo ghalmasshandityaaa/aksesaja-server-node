@@ -31,7 +31,10 @@ dotenv.config();
         console.log('Cron job is not running!');
       }
     })
-    .catch((error) => console.log({ message: 'Database connection failed!', error: error.message }));
+    .catch((error) => {
+      console.log({ message: 'Database connection failed!', error: error.message });
+      process.exit(1);
+    });
 
   /** Initialize middleware */
   app.use(cors({ ...CORS_OPTION }));

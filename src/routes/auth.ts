@@ -15,5 +15,6 @@ router.post('/encrypt', AuthController.encrypt);
 router.post('/decrypt', AuthController.decrypt);
 router.get('/logout', AuthController.logout);
 router.post('/destroyCookie', AuthController.destroyCookie);
+router.get('/refreshToken', AuthController.refreshToken);
 
 export default router;

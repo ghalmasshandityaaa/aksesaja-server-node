@@ -6,10 +6,11 @@ import { generateRandomNumber } from '../helpers/helper';
 import { UserVerificationCode } from '../models/user-verification-code';
 import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
-import { signAccessToken } from './jwt.service';
+import { signAccessToken, signRefreshToken } from './jwt.service';
+import { v4 as uuidv4 } from 'uuid';
 
 export class AuthService {
-  constructor() { }
+  constructor() {}
 
   static async signIn(params: SignIn) {
     try {
@@ -28,7 +29,7 @@ export class AuthService {
 
       /** Generate access token */
       const accessToken = await signAccessToken(getUsers);
-      const refreshToken = await signAccessToken(getUsers);
+      const refreshToken = await signRefreshToken(getUsers);
 
       const result = {
         accessToken,
@@ -45,6 +46,7 @@ export class AuthService {
   static async signUp(params: SignUp, email: string) {
     try {
       const datatemp = {
+        userId: uuidv4(),
         fullName: params.fullName,
         email,
         password: params.password,
@@ -56,7 +58,7 @@ export class AuthService {
       /** Insert Users */
       await Connection.createQueryBuilder().insert().into(Users).values(datatemp).execute();
 
-      return { result: null, code: 201 };
+      return { result: datatemp, code: 201 };
     } catch (e) {
       console.error({ service: 'AuthService.signUp', message: e.message, stack: e.stack });
       throw e;

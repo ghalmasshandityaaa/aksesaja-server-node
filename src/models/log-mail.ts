@@ -2,7 +2,7 @@ import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('log_mail')
 export class LogMail extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'log_mail_id' })
+  @PrimaryGeneratedColumn({ name: 'log_mail_id' })
   logMailId: string;
 
   @Column({ name: 'description' })

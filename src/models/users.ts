@@ -1,8 +1,9 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, BaseEntity, OneToOne, PrimaryColumn } from 'typeorm';
+import { UserPersonal } from './user-personal';
 
 @Entity('users')
 export class Users extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid', { name: 'user_id' })
+  @PrimaryColumn({ name: 'user_id' })
   userId: string;
 
   @Column({ name: 'full_name' })
@@ -23,9 +24,12 @@ export class Users extends BaseEntity {
   @Column({ name: 'created_at' })
   createdAt: string;
 
-  @Column({ name: 'updated_at', nullable: true })
-  updatedAt: string;
+  @Column({ type: 'varchar', name: 'updated_at', nullable: true })
+  updatedAt: string | null;
 
-  @Column({ name: 'updated_by', nullable: true })
-  updatedBy: string;
+  @Column({ type: 'varchar', name: 'updated_by', nullable: true })
+  updatedBy: string | null;
+
+  @OneToOne(() => UserPersonal, (userPersonal) => userPersonal.userId, { nullable: true })
+  userPersonal!: UserPersonal;
 }

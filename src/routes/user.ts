@@ -7,5 +7,6 @@ import AuthMiddleware from '../middlewares/authorization';
 
 /* Route Release. */
 router.get('/', AuthMiddleware, UserController.getAllUsers);
+router.get('/userData', AuthMiddleware, UserController.userData);
 
 export default router;

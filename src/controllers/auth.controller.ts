@@ -143,13 +143,13 @@ export class AuthController {
   }
 
   static async refreshToken(req: Request, res: Response) {
-    const { refreshToken } = req.cookies;
-    if (!refreshToken) throw new Error('Invalid token');
+    const refreshToken = req.cookies.refreshToken;
     try {
+      if (!refreshToken) throw new Error('Invalid token');
       const users = await verifyRefreshToken(refreshToken);
       const accessToken = await signAccessToken({ userId: users.userId, email: users.email });
 
-      ResponseSuccess(res, 200, { accessToken }, [{ name: 'accessToken', value: accessToken }]);
+      ResponseSuccess(res, 200, { accessToken });
     } catch (e) {
       console.error({ service: 'AuthController.refreshToken', message: e.message, stack: e.stack });
       ResponseError(res, 400, e);
