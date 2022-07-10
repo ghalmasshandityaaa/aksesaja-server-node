@@ -9,7 +9,7 @@ import { MailOptionsInterface } from '../interfaces/mailer.interface';
 import { signAccessToken } from './jwt.service';
 
 export class AuthService {
-  constructor() {}
+  constructor() { }
 
   static async signIn(params: SignIn) {
     try {
@@ -48,6 +48,7 @@ export class AuthService {
         fullName: params.fullName,
         email,
         password: params.password,
+        isActive: true,
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         createdBy: 'API Auth SignUp',
       };
