@@ -12,6 +12,7 @@ import { Config } from './helpers/config.helper';
 import * as requestIp from 'request-ip';
 import { CORS_OPTION } from './constants/server.constant';
 import indexRouter from './routes/index';
+import { multerErrorHandling } from './middlewares/multer-error-handling';
 dotenv.config();
 
 (async () => {
@@ -50,6 +51,7 @@ dotenv.config();
 
   /** Error Handling */
   app.use(error404);
+  app.use(multerErrorHandling);
   app.use(logErrors);
   app.use(clientErrorHandler);
 
