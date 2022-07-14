@@ -12,6 +12,8 @@ build:
   artifacts:
     paths:
       - dist/
+    expire_in: 1 hour
+    # untracked: true
 
 deploy-dev:
   image: ruby:latest
