@@ -5,10 +5,9 @@ import { Connection } from '../config/db.config';
 import moment from 'moment';
 import { MailOptionsInterface, SetLogEmailInterface } from '~/interfaces/mailer.interface';
 import { LogMail } from '../models/log-mail';
-import { v4 as uuidv4 } from 'uuid';
 
 export class MailerService {
-  constructor() {}
+  constructor() { }
 
   static async sendEmail(mailOption: MailOptionsInterface) {
     try {
@@ -72,7 +71,6 @@ export class MailerService {
       }
 
       const dataset = {
-        logMailId: uuidv4(),
         description: data.description,
         recipient: data.sendTo,
         status: status,

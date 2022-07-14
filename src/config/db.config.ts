@@ -16,5 +16,5 @@ export const Connection = new DataSource({
   entities: [Users, UserVerificationCode, LogMail, UserPersonal, StatusVerification],
   migrations: ['../migration/**/*.ts'],
   subscribers: [],
-  ssl: { rejectUnauthorized: false },
+  // ssl: { rejectUnauthorized: false },
 });

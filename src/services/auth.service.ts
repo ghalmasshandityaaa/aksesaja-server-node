@@ -7,10 +7,9 @@ import { UserVerificationCode } from '../models/user-verification-code';
 import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
 import { signAccessToken, signRefreshToken } from './jwt.service';
-import { v4 as uuidv4 } from 'uuid';
 
 export class AuthService {
-  constructor() {}
+  constructor() { }
 
   static async signIn(params: SignIn) {
     try {
@@ -46,7 +45,6 @@ export class AuthService {
   static async signUp(params: SignUp, email: string) {
     try {
       const datatemp = {
-        userId: uuidv4(),
         fullName: params.fullName,
         email,
         password: params.password,

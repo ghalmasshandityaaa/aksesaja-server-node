@@ -23,9 +23,9 @@ export class UserVerificationCode extends BaseEntity {
   @Column({ name: 'created_by' })
   createdBy: string;
 
-  @Column({ name: 'updated_at' })
+  @Column({ nullable: true, name: 'updated_at' })
   updatedAt: string;
 
-  @Column({ name: 'updated_by' })
+  @Column({ nullable: true, name: 'updated_by' })
   updatedBy: string;
 }

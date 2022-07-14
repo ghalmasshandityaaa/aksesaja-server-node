@@ -3,6 +3,7 @@ import multer, { memoryStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { S3 } from 'aws-sdk';
 import { Config } from "./config.helper";
+import { IMAGE_MIMETYPE } from '../constants/image.constant';
 
 export const imageFileFilter = (_: any, file: any, callback: any) => {
   if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|pdf|PDF)$/)) {
@@ -11,7 +12,12 @@ export const imageFileFilter = (_: any, file: any, callback: any) => {
   callback(null, true);
 };
 
-const aksesajaImage = (file: any) => {
+const aksesajaImage = (_file: any) => {
+  const fileName = `AKS_${uuidv4()}_${Date.now()}.webp`.replace(/\s/g, '_');
+  return fileName;
+}
+
+const aksesajaDocName = (file: any) => {
   const fileExtName = extname(file.originalname);
   const fileName = `AKS_${uuidv4()}_${Date.now()}${fileExtName}`.replace(/\s/g, '_');
   return fileName;
@@ -29,11 +35,18 @@ const s3: any = new S3({
   region: Config.get('S3_REGION'),
 });
 
+const isImage = (file: any) => { return IMAGE_MIMETYPE.indexOf(file.mimetype) > -1 ? true : false };
+
 export const uploadS3 = async (destination: string, file: any) => {
+  const isImg: boolean = isImage(file);
+  const fileName = isImg ? aksesajaImage(file) : aksesajaDocName(file);
+  const contentType = isImg ? 'image/webp' : file.mimetype;
+
   const uploadParams: any = {
     Bucket: Config.get('S3_BUCKET'),
-    Key: `${destination}/${aksesajaImage(file)}`,
+    Key: `${destination}/${fileName}`,
     Body: file.buffer,
+    ContentType: contentType,
   }
 
   try {
@@ -46,11 +59,16 @@ export const uploadS3 = async (destination: string, file: any) => {
 }
 
 export const uploadArrayS3 = async (destination: string, file: any) => {
+  const isImg: boolean = isImage(file);
+  const fileName = isImg ? aksesajaImage(file) : aksesajaDocName(file);
+  const contentType = isImg ? 'image/webp' : file.mimetype;
+
   const uploadParams: any = file.map((file: any) => {
     return {
       Bucket: Config.get('S3_BUCKET'),
-      Key: `${destination}/${aksesajaImage(file)}`,
+      Key: `${destination}/${fileName}`,
       Body: file.buffer,
+      ContentType: contentType,
     }
   })
 
