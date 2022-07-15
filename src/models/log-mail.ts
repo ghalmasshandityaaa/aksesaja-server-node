@@ -1,8 +1,8 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryColumn } from 'typeorm';
 
 @Entity('log_mail')
 export class LogMail extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: 'log_mail_id' })
+  @PrimaryColumn({ name: 'log_mail_id' })
   logMailId: string;
 
   @Column({ name: 'description' })
