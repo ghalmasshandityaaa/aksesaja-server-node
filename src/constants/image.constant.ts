@@ -7,4 +7,4 @@ export const IMAGE_MIMETYPE: string[] = [
   'image/PNG',
   'image/webp',
   'image/WEBP',
-]
+];

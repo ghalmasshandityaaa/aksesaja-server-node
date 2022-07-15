@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { SignIn, SignUp, VerifyActivationCode } from '~/interfaces/auth.interface';
+import { SignIn, SignUp, VerifyActivationCode } from '../interfaces/auth.interface';
 import { ResponseErrorValidation } from '../helpers/response.helper';
 
 export const SignInSchema = async (params: SignIn) => {

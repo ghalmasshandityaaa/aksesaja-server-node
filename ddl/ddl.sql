@@ -579,3 +579,16 @@ CREATE TABLE log_mail (
 	"response_detail" text NOT NULL,
 	"created_at" timestamp NOT NULL
 ); -- dev
+
+CREATE TABLE feedback (
+  "feedback_id" text NOT NULL PRIMARY KEY,
+  "email" varchar(50) default null,
+  "full_name" varchar(15) default null,
+  "subject" varchar(15) not null,
+  "description" text not null,
+  "feedback_type" smallint not null default 1,
+  "is_replied" boolean default false,
+	"created_at" timestamp NOT NULL
+); -- dev
+
+comment on column feedback.feedback_type is '1: development, 2: feature, 3: apps'; -- dev

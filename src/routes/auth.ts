@@ -24,7 +24,7 @@ router.post('/uploadFile', AuthMiddleware, upload.single('file'), async (req: an
     message: 'OK',
     auth: req.auth,
     result: result,
-  })
+  });
 });
 
 router.post('/uploadFiles', AuthMiddleware, upload.array('file'), async (req: any, res: any) => {
@@ -34,9 +34,9 @@ router.post('/uploadFiles', AuthMiddleware, upload.array('file'), async (req: an
       message: 'OK',
       auth: req.auth,
       result: result,
-    })
+    });
   } catch (e) {
-    res.json({ message: e.message })
+    res.json({ message: e.message });
   }
 });
 
@@ -47,7 +47,7 @@ router.get('/getObject/:destination/:key', AuthMiddleware, async (req: any, res:
     const result = await getObjectS3(`${destination}/${key}`);
     res.send(result);
   } catch (e) {
-    res.json({ message: e.message })
+    res.json({ message: e.message });
   }
 });
 

@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import { AuthService } from '../services/auth.service';
-import { SignIn, SignUp } from '~/interfaces/auth.interface';
+import { SignIn, SignUp } from '../interfaces/auth.interface';
 import { textDecrypt, textEncrypt } from '../helpers/helper';
 import * as requestIp from 'request-ip';
 import { EmailSchema, SignInSchema, SignUpSchema, VerifyActivationCodeSchema } from '../schema/auth.schema';

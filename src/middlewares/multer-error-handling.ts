@@ -24,4 +24,4 @@ export const multerErrorHandling = (error: any, _req: any, res: any, __next: any
       return res.status(400).json({ message: 'Error', error: 'Max file count exceeded' });
     }
   }
-}
+};

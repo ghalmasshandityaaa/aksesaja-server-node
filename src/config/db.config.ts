@@ -6,6 +6,7 @@ import { UserVerificationCode } from '../models/user-verification-code';
 import { LogMail } from '../models/log-mail';
 import { UserPersonal } from '../models/user-personal';
 import { StatusVerification } from '../models/status-verification';
+import { Feedback } from '../models/feedback';
 dotenv.config();
 
 export const Connection = new DataSource({
@@ -13,7 +14,7 @@ export const Connection = new DataSource({
   url: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/postgres',
   synchronize: false,
   logging: false,
-  entities: [Users, UserVerificationCode, LogMail, UserPersonal, StatusVerification],
+  entities: [Users, UserVerificationCode, LogMail, UserPersonal, StatusVerification, Feedback],
   migrations: ['../migration/**/*.ts'],
   subscribers: [],
   // ssl: { rejectUnauthorized: false },

@@ -1,4 +1,4 @@
-import { SignIn, SignUp } from '~/interfaces/auth.interface';
+import { SignIn, SignUp } from '../interfaces/auth.interface';
 import { Users } from '../models/users';
 import { Connection } from '../config/db.config';
 import moment from 'moment';
@@ -10,7 +10,7 @@ import { signAccessToken, signRefreshToken } from './jwt.service';
 import { v4 as uuidv4 } from 'uuid';
 
 export class AuthService {
-  constructor() { }
+  constructor() {}
 
   static async signIn(params: SignIn) {
     try {
