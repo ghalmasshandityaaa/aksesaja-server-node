@@ -124,7 +124,7 @@ CREATE TABLE user_whislist_item (
 ); -- dev
 
 /** Level competition yang di support */
-CREATE TABLE leve_competition (
+CREATE TABLE level_competition (
   "level_competition_id" text NOT NULL PRIMARY KEY,
   "level_competition_name" varchar(25) not null,
   "description" text default null,

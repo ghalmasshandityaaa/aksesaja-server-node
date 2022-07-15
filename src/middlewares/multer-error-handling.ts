@@ -1,6 +1,6 @@
 import multer from 'multer';
 
-export const multerErrorHandling = (error: any, _req: any, res: any, __next: any) => {
+export const MulterErrorHandling = (error: any, _req: any, res: any, __next: any) => {
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({ message: 'Error', error: 'File size is too large' });
@@ -18,10 +18,6 @@ export const multerErrorHandling = (error: any, _req: any, res: any, __next: any
       return res.status(400).json({ message: 'Error', error: 'Unexpected file' });
     } else if (error.code === 'LIMIT_INPUT_SIZE') {
       return res.status(400).json({ message: 'Error', error: 'Max input size exceeded' });
-    } else if (error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ message: 'Error', error: 'Max file size exceeded' });
-    } else if (error.code === 'LIMIT_FILE_COUNT') {
-      return res.status(400).json({ message: 'Error', error: 'Max file count exceeded' });
     }
   }
 };
