@@ -18,6 +18,7 @@ router.post('/decrypt', AuthController.decrypt);
 router.post('/logout', AuthController.logout);
 router.post('/destroyCookie', AuthController.destroyCookie);
 router.get('/refreshToken', AuthController.refreshToken);
+router.get('/testRoute', (_req, res) => { res.send('ok') });
 router.post('/uploadFile', AuthMiddleware, upload.single('file'), async (req: any, res: any) => {
   const result = await uploadS3('users', req.file);
   res.json({

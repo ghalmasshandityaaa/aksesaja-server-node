@@ -10,10 +10,13 @@ build:
   script:
     - npm run build
   artifacts:
-    paths:
-      - dist/
-    expire_in: 1 hour
-    # untracked: true
+    # paths:
+    #   - dist/
+    # expire_in: 1 hour
+    untracked: true
+  only:
+    - develop
+    - master
 
 deploy-dev:
   image: ruby:latest
