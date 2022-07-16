@@ -5,5 +5,4 @@ export interface UploadBanner {
   urlLink: string;
   startDate: string;
   endDate: string;
-  status: string;
 }

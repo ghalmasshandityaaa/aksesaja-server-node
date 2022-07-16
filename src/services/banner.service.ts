@@ -6,10 +6,17 @@ import { Connection } from '../config/db.config';
 import { MasterBanner } from '../models/master-banner';
 
 export class BannerService {
-  constructor() {}
+  constructor() { }
 
   static async uploadBanner(params: UploadBanner, auth: Auth) {
+    const currentDate: string = moment().format('YYYY-MM-DD HH:mm:ss');
     try {
+      let status: string = 'INACTIVE';
+
+      if (params.startDate > currentDate) status = 'WILL_COME';
+      else if (params.startDate <= currentDate && params.endDate >= currentDate) status = 'ACTIVE';
+      else if (params.endDate < currentDate) status = 'EXPIRED';
+
       /** Insert data banner into database */
       const insertData: object = {
         bannerId: uuidv4(),
@@ -19,7 +26,7 @@ export class BannerService {
         urlLink: params.urlLink,
         startDate: params.startDate,
         endDate: params.endDate,
-        status: params.status,
+        status,
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         createdBy: auth.email,
       };

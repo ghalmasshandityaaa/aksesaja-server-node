@@ -340,9 +340,9 @@ CREATE TYPE banner_position AS ENUM ('HOMEPAGE', 'EVENT'); -- dev
 CREATE TYPE banner_status AS ENUM ('WILL_COME','ON_GOING','ACTIVE','INACTIVE','EXPIRED'); -- dev
 
 /** Banner untuk ditampilkan ke user */
-CREATE TABLE banner_master (
+CREATE TABLE master_banner (
   "banner_id" text NOT NULL PRIMARY KEY,
-  "banner_name" text not null,
+  "banner_name" varchar(50) not null,
   "position" banner_position not null,
   "file_addres" text not null,
   "url_link" text not null,

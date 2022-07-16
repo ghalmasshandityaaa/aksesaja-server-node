@@ -5,11 +5,13 @@ const router = express.Router();
 import userRouter from './user';
 import authRouter from './auth';
 import feedbackRouter from './feedback';
+import bannerRouter from './banner';
 
 /* Route Release. */
 router.use('/users', userRouter);
 router.use('/auth', authRouter);
 router.use('/feedback', feedbackRouter);
+router.use('/banner', bannerRouter);
 
 router.get('/', (_req: Request, res: Response) => {
   res.status(200).json({
