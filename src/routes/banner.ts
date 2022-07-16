@@ -9,6 +9,6 @@ router
   .post(AuthMiddleware, BannerController.uploadBanner)
   .get(AuthMiddleware, BannerController.getAllBanner);
 
-router.get('/homepage', AuthMiddleware, BannerController.getHomepageBanner);
+router.get('/homepage', BannerController.getHomepageBanner);
 
 export default router;
