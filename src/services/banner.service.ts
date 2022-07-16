@@ -64,14 +64,11 @@ export class BannerService {
       /** Get All Banner */
       const getHomepageBanner: MasterBanner[] = await MasterBanner.createQueryBuilder('masterBanner')
         .where('masterBanner.position = :position', { position: 'HOMEPAGE' })
+        .select([
+          'masterBanner.urlLink',
+          'masterBanner.fileAddress',
+        ])
         .getMany();
-
-      for (const data of getHomepageBanner) {
-        data.createdAt = moment.utc(data.createdAt).format('YYYY-MM-DD HH:mm:ss');
-        data.startDate = moment.utc(data.startDate).format('YYYY-MM-DD HH:mm:ss');
-        data.endDate = moment.utc(data.endDate).format('YYYY-MM-DD HH:mm:ss');
-        if (data.updatedBy) moment.utc(data.updatedAt).format('YYYY-MM-DD HH:mm:ss');
-      }
 
       return { result: getHomepageBanner, code: 200 };
     } catch (e) {
