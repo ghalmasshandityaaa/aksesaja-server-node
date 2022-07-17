@@ -4,13 +4,9 @@ import { SendFeedback } from '../interfaces/feedback.interface';
 
 export const sendFeedbackSchema = async (params: SendFeedback) => {
   const schema = Joi.object({
-    email: Joi.string().email().optional().messages({
-      'string.base': 'email harus berupa string!',
-      'string.email': 'email tidak valid!',
-    }),
     fullName: Joi.string().max(15).optional().messages({
-      'string.base': 'Email harus berupa string!',
-      'string.max': 'Email maksimal 15 karakter!',
+      'string.base': 'fullName harus berupa string!',
+      'string.max': 'fullName maksimal 15 karakter!',
     }),
     subject: Joi.string().max(50).required().messages({
       'string.base': 'Subject harus berupa string!',
