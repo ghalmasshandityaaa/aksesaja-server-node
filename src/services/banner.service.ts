@@ -6,7 +6,7 @@ import { Connection } from '../config/db.config';
 import { MasterBanner } from '../models/master-banner';
 
 export class BannerService {
-  constructor() { }
+  constructor() {}
 
   static async uploadBanner(params: UploadBanner, auth: Auth) {
     const currentDate: string = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -64,10 +64,7 @@ export class BannerService {
       /** Get All Banner */
       const getHomepageBanner: MasterBanner[] = await MasterBanner.createQueryBuilder('masterBanner')
         .where('masterBanner.position = :position', { position: 'HOMEPAGE' })
-        .select([
-          'masterBanner.urlLink',
-          'masterBanner.fileAddress',
-        ])
+        .select(['masterBanner.urlLink', 'masterBanner.fileAddress'])
         .getMany();
 
       return { result: getHomepageBanner, code: 200 };

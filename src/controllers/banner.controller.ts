@@ -7,7 +7,7 @@ import { Auth } from '~/interfaces/auth.interface';
 import { AuthRequest } from '../middlewares/authorization';
 
 export class BannerController {
-  constructor() { }
+  constructor() {}
 
   static async uploadBanner(req: AuthRequest, res: Response) {
     const params: UploadBanner = req.body;

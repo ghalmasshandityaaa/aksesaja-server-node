@@ -7,7 +7,7 @@ import jwtDecode from 'jwt-decode';
 import { Auth } from '~/interfaces/auth.interface';
 
 export class FeedbackService {
-  constructor() { }
+  constructor() {}
 
   static async sendFeedback(params: SendFeedback, refreshToken: string) {
     let email;

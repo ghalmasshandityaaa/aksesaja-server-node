@@ -7,8 +7,4 @@ temp/
 dist
 .package.lock.json
 .env
-<<<<<<< HEAD
 .vercel
-=======
-.vercel
->>>>>>> 633c443715dc297f67c4fcea10a92e652af23985

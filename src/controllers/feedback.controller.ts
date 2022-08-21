@@ -5,7 +5,7 @@ import { SendFeedback } from '../interfaces/feedback.interface';
 import { FeedbackService } from '../services/feedback.service';
 
 export class FeedbackController {
-  constructor() { }
+  constructor() {}
 
   static async sendFeedback(req: Request, res: Response) {
     const params: SendFeedback = req.body;

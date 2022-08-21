@@ -23,6 +23,8 @@ alter table users alter column full_name set default null; -- dev
 alter table users alter column phone set default null; -- dev
 alter table users alter column password set default null; -- dev
 
+CREATE INDEX user_idx ON Users (is_active) INCLUDE (email);
+
 CREATE TYPE status_account_bank AS ENUM ('INVALID_ACCOUNT_NUMBER', 'PENDING', 'SUCCESS'); -- dev
 
 /** Account bank untuk organizer
@@ -276,18 +278,26 @@ CREATE TABLE Organizer (
   "user_id" text not null,
   "organizer_name" varchar(50) not null,
   "slug" varchar(255) not null,
-  "photo" text default 'default_picture.png',
-  "banner" text default 'default_banner.png',
-  "agency" varchar(50) not null,
-  "member_organizer" member_organizer default 'DEFAULT',
+  "organization" varchar(50) not null,
+  "description" varchar(100) default null,
+  "address" varchar(255) default null,
   "email" varchar(50) not null,
   "phone" varchar(13) not null,
+  "whatsapp" varchar(13) not null,
+  "instagram" varchar(20) default null,
+  "detail" text default null,
+  "member" member_organizer default 'DEFAULT',
   "status" status_organizer default 'PENDING',
-  "description" text default null,
+  "photo" text default null,
+  "banner" text default null,
+  "is_locked" boolean default false,
+  "password" text default null,
 	"created_at" timestamp NOT NULL,
 	"created_by" text default NULL,
 	"updated_at" timestamp default NULL,
-	"updated_by" text default NULL
+	"updated_by" text default NULL,
+  CONSTRAINT fk_user_id FOREIGN KEY("user_id") REFERENCES users("user_id") ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT slug_unique UNIQUE (slug),
 ); -- dev
 
 /** Event document merupakan dokumen penunjang lomba yang ditampilkan kepada user */
@@ -304,7 +314,7 @@ CREATE TABLE event_document (
 ); -- dev
 
 CREATE TYPE organizer_data_type AS ENUM ('KTP', 'NPWP'); -- dev
-CREATE TYPE statsu_organizer_data AS ENUM ('PENDING', 'REVIEW', 'APPROVED','REJECTED'); -- dev
+CREATE TYPE status_organizer_data AS ENUM ('PENDING', 'REVIEW', 'APPROVED','REJECTED'); -- dev
 
 /** Organizer diizinkan untuk mendaftarkan lombanya apabila terdapat minimal 1 dokumen 
   * yang di approve oleh admin
@@ -318,7 +328,7 @@ CREATE TABLE organizer_data (
   "id_card_number" varchar(16) not null,
   "address" varchar(255) not null,
   "file_address" text default 'default_picture.png',
-  "status" statsu_organizer_data default 'PENDING',
+  "status" status_organizer_data default 'PENDING',
 	"created_at" timestamp NOT NULL,
 	"created_by" text default NULL,
 	"updated_at" timestamp default NULL,
@@ -354,6 +364,8 @@ CREATE TABLE master_banner (
 	"updated_at" timestamp default NULL,
 	"updated_by" text default NULL
 ); -- dev
+
+CREATE INDEX position_status_idx ON master_banner (position,status) INCLUDE (status); -- dev
 
 /** Table untuk menampung data transaksi */
 CREATE TABLE transaction (
@@ -569,6 +581,8 @@ CREATE TABLE user_verification_code (
 	"updated_at" timestamp default NULL,
 	"updated_by" text default NULL
 ); -- dev
+
+CREATE INDEX email_idx ON user_verification_code (email) INCLUDE (expired_date);
 
 CREATE TABLE log_mail (
   "log_mail_id" text NOT NULL PRIMARY KEY,
