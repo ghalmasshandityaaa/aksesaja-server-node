@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import * as dotenv from 'dotenv';
 import { Users } from '../models/users';
 import { UserVerificationCode } from '../models/user-verification-code';
 import { LogMail } from '../models/log-mail';
@@ -9,14 +8,15 @@ import { StatusVerification } from '../models/status-verification';
 import { Feedback } from '../models/feedback';
 import { MasterBanner } from '../models/master-banner';
 import { Organizer } from '../models/organizer';
-dotenv.config();
+import { StatsOrganizer } from '../models/stats-organizer';
+import { Config } from '../helpers/config.helper';
 
 export const Connection = new DataSource({
   type: 'postgres',
-  url: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/postgres',
+  url: Config.get('DATABASE_URL') || 'postgres://postgres:postgres@localhost:5432/postgres',
   synchronize: false,
-  logging: true,
-  entities: [Users, UserVerificationCode, LogMail, UserPersonal, StatusVerification, Feedback, MasterBanner, Organizer],
+  logging: Config.get('APP_MODE') === 'production' ? false : true,
+  entities: [Users, UserVerificationCode, LogMail, UserPersonal, StatusVerification, Feedback, MasterBanner, Organizer, StatsOrganizer],
   migrations: ['../migration/**/*.ts'],
   subscribers: [],
   // ssl: { rejectUnauthorized: false },

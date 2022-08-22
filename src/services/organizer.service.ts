@@ -10,16 +10,21 @@ import {
 import { Organizer } from '../models/organizer';
 import { Connection } from '../config/db.config';
 import { DEFAULT_IMAGE_PATH } from '../constants/image.constant';
+import { StatsOrganizer } from '../models/stats-organizer';
 
 export class OrganizerService {
-  constructor() {}
+  constructor() { }
 
   static async createOrganizer(params: RegisterOrganizer, auth: Auth) {
+    const queryRunner = Connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     const currentDate: string = moment().format('YYYY-MM-DD HH:mm:ss');
     try {
       /** Organizer data */
+      const organizerId: string = uuidv4();
       const organizer = {
-        organizerId: uuidv4(),
+        organizerId,
         userId: auth.userId,
         slug: params.organizerName.toLowerCase().replace(/ /g, '-') + '-' + moment().format('YYYYMMDDHHmmss'),
         ...params,
@@ -30,12 +35,24 @@ export class OrganizerService {
       };
 
       /** Insert data organizer into database  */
-      await Connection.createQueryBuilder().insert().into(Organizer).values(organizer).execute();
+      await queryRunner.manager.createQueryBuilder().insert().into(Organizer).values(organizer).execute();
 
+      /** Insert data stats organizer into database */
+      await queryRunner.manager.createQueryBuilder().insert().into(StatsOrganizer).values({
+        statsOrganizerId: uuidv4(),
+        organizerId,
+        createdAt: currentDate,
+        createdBy: auth.email,
+      }).execute();
+
+      await queryRunner.commitTransaction();
       return { result: 'Organizer registered successfully.', code: 201 };
     } catch (e) {
+      await queryRunner.rollbackTransaction();
       console.error({ service: 'OrganizerService.createOrganizer', message: e.message, stack: e.stack });
       throw e;
+    } finally {
+      await queryRunner.release();
     }
   }
 

@@ -300,6 +300,22 @@ CREATE TABLE Organizer (
   CONSTRAINT slug_unique UNIQUE (slug),
 ); -- dev
 
+CREATE TABLE stats_organizer (
+  "stats_organizer_id" text NOT NULL PRIMARY KEY,
+  "organizer_id" text not null,
+  "total_event" int not null default 0,
+  "upcoming_event" int not null default 0,
+  "ongoing_event" int not null default 0,
+  "finish_event" int not null default 0,
+  "rating" float not null default 0,
+  "testimonial" int not null default 0,
+	"created_at" timestamp NOT NULL,
+	"created_by" text default NULL,
+	"updated_at" timestamp default NULL,
+	"updated_by" text default NULL,
+  CONSTRAINT fk_organizer_id FOREIGN KEY("organizer_id") REFERENCES organizer("organizer_id") ON UPDATE CASCADE ON DELETE CASCADE
+); -- dev
+
 /** Event document merupakan dokumen penunjang lomba yang ditampilkan kepada user */
 CREATE TABLE event_document (
   "event_document_id" text NOT NULL PRIMARY KEY,
