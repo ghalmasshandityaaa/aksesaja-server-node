@@ -178,4 +178,71 @@ export class OrganizerService {
       throw e;
     }
   }
+
+  static async detailOrganizer(organizerId: string) {
+    try {
+      /** Get data organizer from database  */
+      const organizers = await Organizer.createQueryBuilder('organizer')
+        .leftJoinAndMapOne(
+          'organizer.statsOrganizer',
+          StatsOrganizer,
+          'statsOrganizer',
+          'statsOrganizer.organizerId = organizer.organizerId'
+        )
+        .where('organizer.organizerId = :organizerId', { organizerId })
+        .select([
+          'organizer.organizerId',
+          'organizer.userId',
+          'organizer.organizerName',
+          'organizer.slug',
+          'organizer.description',
+          'organizer.address',
+          'organizer.email',
+          'organizer.phone',
+          'organizer.whatsapp',
+          'organizer.instagram',
+          'organizer.member',
+          'organizer.status',
+          'organizer.photo',
+          'organizer.banner',
+          'organizer.createdAt',
+          'organizer.createdBy',
+          'statsOrganizer.totalEvent',
+          'statsOrganizer.upcomingEvent',
+          'statsOrganizer.ongoingEvent',
+          'statsOrganizer.finishEvent',
+          'statsOrganizer.rating',
+          'statsOrganizer.testimonial',
+        ])
+        .getOne();
+
+      /** Throw error when organizer not found */
+      if (!organizers) throw new Error('Organizer not found.');
+
+      const statsOrganizer = organizers.statsOrganizer;
+      delete organizers.statsOrganizer;
+
+      const result = {
+        ...organizers,
+        ...statsOrganizer,
+      }
+
+      return { result, code: 200 };
+    } catch (e) {
+      console.error({ service: 'OrganizerService.detailOrganizer', message: e.message, stack: e.stack });
+      throw e;
+    }
+  }
+
+  static async detailInformationOrganizer(organizerId: string) {
+    try {
+      const getDetailOrganizer = await Organizer.findOne({ where: { organizerId }, select: ['detail'] });
+      if (!getDetailOrganizer) throw Error('Organizer not found.');
+
+      return getDetailOrganizer.detail;
+    } catch (e) {
+      console.error({ service: 'OrganizerService.detailOrganizer', message: e.message, stack: e.stack });
+      throw e;
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { ResponseError, ResponseSuccess } from '../helpers/response.helper';
 import { RegisterOrganizer, UpdateOrganizer, UpdatePassword } from '../interfaces/organizer.interface';
-import { registerSchema, updateOrganizerSchema, updatePasswordSchema } from '../schema/organizer.schema';
+import { checkOrganizerIdSchema, registerSchema, updateOrganizerSchema, updatePasswordSchema } from '../schema/organizer.schema';
 import { OrganizerService } from '../services/organizer.service';
 import { Auth } from '../interfaces/auth.interface';
 import { AuthRequest } from '../middlewares/authorization';
@@ -85,6 +85,40 @@ export class OrganizerController {
       ResponseSuccess(res, code, result);
     } catch (e) {
       console.error({ service: 'OrganizerController.updatePassword', message: e.message, stack: e.stack });
+      ResponseError(res, 400, e);
+    }
+  }
+
+  static async detailOrganizer(req: AuthRequest, res: Response) {
+    const { organizerId } = req.params;
+    try {
+      /** Validate */
+      await checkOrganizerIdSchema({ organizerId });
+
+      /** Logic Service */
+      const { result, code } = await OrganizerService.detailOrganizer(organizerId);
+
+      /** Response */
+      ResponseSuccess(res, code, result);
+    } catch (e) {
+      console.error({ service: 'OrganizerController.detailOrganizer', message: e.message, stack: e.stack });
+      ResponseError(res, 400, e);
+    }
+  }
+
+  static async detailInformationOrganizer(req: AuthRequest, res: Response) {
+    const { organizerId } = req.params;
+    try {
+      /** Validate */
+      await checkOrganizerIdSchema({ organizerId });
+
+      /** Logic Service */
+      const result = await OrganizerService.detailInformationOrganizer(organizerId);
+
+      /** Response */
+      ResponseSuccess(res, 200, result);
+    } catch (e) {
+      console.error({ service: 'OrganizerController.detailInformationOrganizer', message: e.message, stack: e.stack });
       ResponseError(res, 400, e);
     }
   }

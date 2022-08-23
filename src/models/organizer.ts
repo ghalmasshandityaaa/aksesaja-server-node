@@ -1,4 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryColumn } from 'typeorm';
+import { StatsOrganizer } from './stats-organizer';
 
 @Entity('organizer')
 export class Organizer extends BaseEntity {
@@ -67,4 +68,6 @@ export class Organizer extends BaseEntity {
 
   @Column({ name: 'updated_by', nullable: true })
   updatedBy: string;
+
+  statsOrganizer?: StatsOrganizer;
 }

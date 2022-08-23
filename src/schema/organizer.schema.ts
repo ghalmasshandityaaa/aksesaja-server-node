@@ -162,3 +162,20 @@ export const updateOrganizerSchema = async (params: UpdateOrganizer) => {
 
   await checkValidate(schema, params);
 };
+
+export const checkOrganizerIdSchema = async (params: { organizerId: string }) => {
+  const schema = Joi.object({
+    organizerId: Joi.string().required()
+      .guid({
+        version: ['uuidv4'],
+      })
+      .messages({
+        'string.base': 'organizerId Id harus berupa string!',
+        'string.empty': 'organizerId Id tidak boleh kosong!',
+        'any.required': 'organizerId Id tidak boleh kosong!',
+        'string.guid': 'organizerId Id tidak valid!',
+      }),
+  });
+
+  await checkValidate(schema, params);
+};
