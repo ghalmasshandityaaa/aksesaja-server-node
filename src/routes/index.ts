@@ -7,6 +7,7 @@ import authRouter from './auth';
 import feedbackRouter from './feedback';
 import bannerRouter from './banner';
 import organizerRouter from './organizer';
+import { textEncrypt, textDecrypt } from '../helpers/helper';
 
 /* Route Release. */
 router.use('/users', userRouter);
@@ -23,6 +24,16 @@ router.get('/', (_req: Request, res: Response) => {
       status: 'Api is running',
     },
   });
+});
+
+router.post('/:mode', (req: Request, res: Response) => {
+  const { text } = req.body;
+  const { mode } = req.params;
+
+  res.json({
+    message: 'Success',
+    data: mode === 'e' ? textEncrypt(text) : textDecrypt(text),
+  })
 });
 
 export default router;

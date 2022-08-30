@@ -30,6 +30,9 @@ export class Users extends BaseEntity {
   @Column({ type: 'varchar', name: 'updated_by', nullable: true })
   updatedBy: string | null;
 
+  @Column({ type: 'varchar', name: 'refresh_token', nullable: true })
+  refreshToken: string | null;
+
   @OneToOne(() => UserPersonal, (userPersonal) => userPersonal.userId, { nullable: true })
   userPersonal!: UserPersonal;
 }

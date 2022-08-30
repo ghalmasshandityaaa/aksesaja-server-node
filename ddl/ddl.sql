@@ -19,6 +19,8 @@ CREATE TABLE Users (
 	"updated_by" text default NULL
 ); -- dev
 
+ALTER TABLE users ADD refresh_token text default null;
+
 alter table users alter column full_name set default null; -- dev
 alter table users alter column phone set default null; -- dev
 alter table users alter column password set default null; -- dev
@@ -278,16 +280,14 @@ CREATE TABLE Organizer (
   "user_id" text not null,
   "organizer_name" varchar(50) not null,
   "slug" varchar(255) not null,
-  "organization" varchar(50) not null,
   "description" varchar(100) default null,
   "address" varchar(255) default null,
   "email" varchar(50) not null,
   "phone" varchar(13) not null,
-  "whatsapp" varchar(13) not null,
-  "instagram" varchar(20) default null,
   "detail" text default null,
   "member" member_organizer default 'DEFAULT',
   "status" status_organizer default 'PENDING',
+  "category_id" varchar(36) not null,
   "photo" text default null,
   "banner" text default null,
   "is_locked" boolean default false,
@@ -297,7 +297,15 @@ CREATE TABLE Organizer (
 	"updated_at" timestamp default NULL,
 	"updated_by" text default NULL,
   CONSTRAINT fk_user_id FOREIGN KEY("user_id") REFERENCES users("user_id") ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_category_id FOREIGN KEY("category_id") REFERENCES organizer_categories("category_id") ON UPDATE SET NULL ON DELETE SET NULL,
   CONSTRAINT slug_unique UNIQUE (slug),
+); -- dev
+
+CREATE TABLE organizer_categories (
+  "category_id" varchar(36) NOT NULL PRIMARY KEY,
+  "category_name" text not null,
+	"created_at" timestamp NOT NULL,
+	"created_by" text default NULL
 ); -- dev
 
 CREATE TABLE stats_organizer (

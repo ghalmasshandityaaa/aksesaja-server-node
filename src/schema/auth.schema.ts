@@ -10,11 +10,9 @@ export const SignInSchema = async (params: SignIn) => {
       'string.email': 'Email tidak valid!',
       'any.required': 'Email tidak boleh kosong!',
     }),
-    password: Joi.string().min(8).max(16).required().messages({
+    password: Joi.string().required().messages({
       'string.empty': 'Password tidak boleh kosong!',
       'string.base': 'Password harus berupa string!',
-      'string.min': 'Password minimal 8 karakter!',
-      'string.max': 'Password maksimal 16 karakter!',
       'any.required': 'Password tidak boleh kosong!',
     }),
   });
@@ -30,11 +28,9 @@ export const SignUpSchema = async (params: SignUp) => {
       'any.required': 'Email tidak boleh kosong!',
     }),
     fullName: Joi.string().required(),
-    password: Joi.string().min(8).max(16).required().messages({
+    password: Joi.string().required().messages({
       'string.empty': 'Password tidak boleh kosong!',
       'string.base': 'Password harus berupa string!',
-      'string.min': 'Password minimal 8 karakter!',
-      'string.max': 'Password maksimal 16 karakter!',
       'any.required': 'Password tidak boleh kosong!',
     }),
   });

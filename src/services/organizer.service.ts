@@ -4,6 +4,7 @@ import moment from 'moment';
 import {
   OrganizerOptions,
   RegisterOrganizer,
+  UpdateDetailOrganizer,
   UpdateOrganizer,
   UpdatePassword,
 } from '../interfaces/organizer.interface';
@@ -11,6 +12,8 @@ import { Organizer } from '../models/organizer';
 import { Connection } from '../config/db.config';
 import { DEFAULT_IMAGE_PATH } from '../constants/image.constant';
 import { StatsOrganizer } from '../models/stats-organizer';
+import { textDecrypt } from '../helpers/helper';
+import bcrypt from 'bcrypt';
 
 export class OrganizerService {
   constructor() { }
@@ -23,6 +26,14 @@ export class OrganizerService {
     try {
       /** Organizer data */
       const organizerId: string = uuidv4();
+      const password: string = textDecrypt(params.password);
+
+      /** Hash password */
+      await bcrypt.hash(password, 10)
+        .then((hash) => {
+          params.password = hash;
+        });
+
       const organizer = {
         organizerId,
         userId: auth.userId,
@@ -88,10 +99,11 @@ export class OrganizerService {
 
       /** Throw error when organizer not found */
       if (!organizers) throw new Error('Organizer not found.');
+      const isUpdateName: boolean = params.organizerName.toLowerCase() === organizers.organizerName.toLowerCase();
 
       const dataset: any = {
         ...params,
-        slug: params.organizerName.toLowerCase().replace(/ /g, '-') + '-' + moment().format('YYYYMMDDHHmmss'),
+        slug: isUpdateName ? params.organizerName.toLowerCase().replace(/ /g, '-') + '-' + moment().format('YYYYMMDDHHmmss') : organizers.slug,
         updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         updatedBy: auth.email,
       };
@@ -107,6 +119,8 @@ export class OrganizerService {
 
   static async updateOrganizerById(organizer: OrganizerOptions): Promise<void> {
     try {
+      if (!organizer.organizerId) throw new Error('organizerId is required');
+
       const organizerId = organizer.organizerId;
       delete organizer.organizerId;
 
@@ -163,14 +177,32 @@ export class OrganizerService {
       /** Get data organizer from database  */
       const organizers = await Organizer.findOne({
         where: { organizerId: params.organizerId },
-        select: ['organizerId'],
+        select: ['organizerId', 'password'],
       });
 
       /** Throw error when organizer not found */
       if (!organizers) throw new Error('Organizer not found.');
 
+      const oldPassword: string = textDecrypt(params.oldPassword);
+      const password: string = textDecrypt(params.password);
+
+      const matched: boolean = await bcrypt.compare(oldPassword, organizers.password);
+      if (!matched) throw new Error('Sorry old password is not match');
+
+      if (!password || !oldPassword) throw new Error('password cannot be null');
+      else if (password.length < 8 || oldPassword.length < 8) throw new Error('Minimum password is 8 character');
+      else if (password.length > 16 || oldPassword.length > 16) throw new Error('Maximum password is 16 character');
+
+      await bcrypt.hash(password, 10)
+        .then((hash) => {
+          params.password = hash;
+        });
+
       /** Update password organizer  */
-      await this.updateOrganizerById(params);
+      await this.updateOrganizerById({
+        organizerId: params.organizerId,
+        password: params.password,
+      });
 
       return { result: 'Successfully update password', code: 200 };
     } catch (e) {
@@ -199,8 +231,6 @@ export class OrganizerService {
           'organizer.address',
           'organizer.email',
           'organizer.phone',
-          'organizer.whatsapp',
-          'organizer.instagram',
           'organizer.member',
           'organizer.status',
           'organizer.photo',
@@ -241,7 +271,38 @@ export class OrganizerService {
 
       return getDetailOrganizer.detail;
     } catch (e) {
-      console.error({ service: 'OrganizerService.detailOrganizer', message: e.message, stack: e.stack });
+      console.error({ service: 'OrganizerService.detailInformationOrganizer', message: e.message, stack: e.stack });
+      throw e;
+    }
+  }
+
+  static async updateDetailInformationOrganizer(params: UpdateDetailOrganizer) {
+    try {
+      const getDetailOrganizer = await Organizer.findOne({ where: { organizerId: params.organizerId }, select: ['detail'] });
+      if (!getDetailOrganizer) throw Error('Organizer not found.');
+
+      await Connection.createQueryBuilder()
+        .update(Organizer)
+        .set({
+          detail: params.detail ?? null,
+        })
+        .where('organizer_id = :organizerId', { organizerId: params.organizerId })
+        .execute();
+
+    } catch (e) {
+      console.error({ service: 'OrganizerService.updateDetailInformationOrganizer', message: e.message, stack: e.stack });
+      throw e;
+    }
+  }
+
+  static async statsOrganizer(organizerId: string) {
+    try {
+      const getDetailOrganizer = await StatsOrganizer.findOne({ where: { organizerId }, select: ['totalEvent', 'upcomingEvent', 'ongoingEvent', 'rating', 'testimonial'] });
+      if (!getDetailOrganizer) throw Error('Stats not found.');
+
+      return getDetailOrganizer;
+    } catch (e) {
+      console.error({ service: 'OrganizerService.statsOrganizer', message: e.message, stack: e.stack });
       throw e;
     }
   }

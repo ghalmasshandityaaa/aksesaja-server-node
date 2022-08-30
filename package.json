@@ -21,6 +21,7 @@
     "@types/node-cron": "^3.0.1",
     "@types/nodemailer": "^6.4.4",
     "aws-sdk": "^2.1171.0",
+    "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
@@ -47,6 +48,7 @@
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.110.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.12",
     "@types/crypto-js": "^4.1.1",

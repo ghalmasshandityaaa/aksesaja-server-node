@@ -8,9 +8,10 @@ import { MailerService } from './mailer.service';
 import { MailOptionsInterface } from '../interfaces/mailer.interface';
 import { signAccessToken, signRefreshToken } from './jwt.service';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 export class AuthService {
-  constructor() {}
+  constructor() { }
 
   static async signIn(params: SignIn) {
     try {
@@ -19,13 +20,10 @@ export class AuthService {
         .select(['users.userId', 'users.password', 'users.email'])
         .getOne();
 
-      if (!getUsers) {
-        /** If users not found */
-        throw Error('Maaf email anda belum terdaftar!');
-      } else if (getUsers.password !== params.password) {
-        /** If password not match */
-        throw Error('Maaf password anda salah!');
-      }
+      if (!getUsers) throw Error('Maaf email anda belum terdaftar!');
+
+      const matched: boolean = await bcrypt.compare(params.password, getUsers.password);
+      if (!matched) throw new Error('Sorry password is not match');
 
       /** Generate access token */
       const accessToken = await signAccessToken(getUsers);
@@ -45,6 +43,11 @@ export class AuthService {
 
   static async signUp(params: SignUp, email: string) {
     try {
+      await bcrypt.hash(params.password, 10)
+        .then((hash) => {
+          params.password = hash;
+        });
+
       const datatemp = {
         userId: uuidv4(),
         fullName: params.fullName,

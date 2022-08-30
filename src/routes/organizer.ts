@@ -14,6 +14,9 @@ router.route('/:organizerId')
   .get(AuthMiddleware, OrganizerController.detailOrganizer)
   .delete(AuthMiddleware, OrganizerController.deleteOrganizer);
 router.post('/updatePassword', AuthMiddleware, OrganizerController.updatePassword);
-router.get('/:organizerId/details', AuthMiddleware, OrganizerController.detailInformationOrganizer);
+router.route('/:organizerId/details')
+  .get(AuthMiddleware, OrganizerController.detailInformationOrganizer)
+  .put(AuthMiddleware, OrganizerController.updateDetailInformationOrganizer)
+router.get('/:organizerId/stats', AuthMiddleware, OrganizerController.statsOrganizer)
 
 export default router;

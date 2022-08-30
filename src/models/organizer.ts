@@ -15,9 +15,6 @@ export class Organizer extends BaseEntity {
   @Column({ name: 'slug' })
   slug: string;
 
-  @Column({ name: 'organization' })
-  organization: string;
-
   @Column({ name: 'description', nullable: true })
   description: string;
 
@@ -30,12 +27,6 @@ export class Organizer extends BaseEntity {
   @Column({ name: 'phone' })
   phone: string;
 
-  @Column({ name: 'whatsapp', nullable: true })
-  whatsapp: string;
-
-  @Column({ name: 'instagram', nullable: true })
-  instagram: string;
-
   @Column({ name: 'detail', nullable: true })
   detail: string;
 
@@ -44,6 +35,9 @@ export class Organizer extends BaseEntity {
 
   @Column({ name: 'status' })
   status: string;
+
+  @Column({ name: 'category_id' })
+  categoryId: string;
 
   @Column({ name: 'photo', nullable: true })
   photo: string;
