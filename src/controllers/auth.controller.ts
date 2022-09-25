@@ -9,7 +9,7 @@ import { VerifyActivationCode } from '../interfaces/auth.interface';
 import { verifyRefreshToken, signAccessToken } from '../services/jwt.service';
 
 export class AuthController {
-  constructor() {}
+  constructor() { }
 
   static async signIn(req: Request, res: Response) {
     const params: SignIn = req.body;
@@ -161,6 +161,7 @@ export class AuthController {
     try {
       const arraysOfCookies: any[] = Object.keys(cookies);
       for (let i: number = 0; i < arraysOfCookies.length; i++) {
+        console.log(i, arraysOfCookies[i])
         res.clearCookie(arraysOfCookies[i]);
       }
 

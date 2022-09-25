@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Auth } from '../interfaces/auth.interface';
+import { Auth, AuthOrganizer } from '../interfaces/auth.interface';
 import moment from 'moment';
 import {
   OrganizerOptions,
@@ -14,6 +14,8 @@ import { DEFAULT_IMAGE_PATH } from '../constants/image.constant';
 import { StatsOrganizer } from '../models/stats-organizer';
 import { textDecrypt } from '../helpers/helper';
 import bcrypt from 'bcrypt';
+import { SignIn } from '../interfaces/organizer.interface';
+import { signAccessTokenOrganizer, signRefreshTokenOrganizer, verifyRefreshTokenOrganizer } from './jwt.service';
 
 export class OrganizerService {
   constructor() { }
@@ -303,6 +305,62 @@ export class OrganizerService {
       return getDetailOrganizer;
     } catch (e) {
       console.error({ service: 'OrganizerService.statsOrganizer', message: e.message, stack: e.stack });
+      throw e;
+    }
+  }
+
+  static async signIn(params: SignIn) {
+    try {
+      const organizers = await Organizer.findOne({ where: { organizerId: params.organizerId }, select: ['userId', 'organizerId', 'isLocked', 'password'] });
+      if (!organizers) {
+        throw new Error('Organizer not found')!
+      } else if (organizers.isLocked) {
+        if (!params.password) throw new Error('Password is required.');
+
+        const password: string = textDecrypt(params.password);
+        const matched: boolean = await bcrypt.compare(password, organizers.password);
+        if (!matched) throw new Error('Sorry old password is not match');
+      }
+
+      const updateRefreshToken = async (data: AuthOrganizer): Promise<string> => {
+        const rToken: string = await signRefreshTokenOrganizer(data);
+        await Connection
+          .createQueryBuilder()
+          .update(Organizer)
+          .set({
+            refreshToken: rToken,
+            updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+            updatedBy: 'Api Refresh Token',
+          })
+          .where('organizer_id = :organizerId', { organizerId: params.organizerId })
+          .execute();
+
+        return rToken;
+      }
+
+      let refreshToken: string;
+      if (organizers.refreshToken) {
+        const { auth, err } = await verifyRefreshTokenOrganizer(organizers.refreshToken);
+        if (err) {
+          if (err.includes('expired')) {
+            refreshToken = await updateRefreshToken({ organizerId: auth.organizerId, userId: auth.userId });
+          } else {
+            throw new Error(err);
+          }
+        }
+
+        refreshToken = organizers.refreshToken;
+      } else {
+        refreshToken = await updateRefreshToken({ organizerId: organizers.organizerId, userId: organizers.userId });
+      }
+
+      const accessToken: string = await signAccessTokenOrganizer({ organizerId: organizers.organizerId, userId: organizers.organizerId });
+      return {
+        refreshToken,
+        accessToken,
+      };
+    } catch (e) {
+      console.error({ service: 'OrganizerService.signIn', message: e.message, stack: e.stack });
       throw e;
     }
   }

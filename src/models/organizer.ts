@@ -63,5 +63,8 @@ export class Organizer extends BaseEntity {
   @Column({ name: 'updated_by', nullable: true })
   updatedBy: string;
 
+  @Column({ name: 'refresh_token', nullable: true })
+  refreshToken: string;
+
   statsOrganizer?: StatsOrganizer;
 }

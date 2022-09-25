@@ -54,3 +54,8 @@ export interface UpdateDetailOrganizer {
   organizerId: string;
   detail: string;
 }
+
+export interface SignIn {
+  organizerId: string;
+  password: string;
+}

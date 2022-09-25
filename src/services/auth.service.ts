@@ -22,8 +22,8 @@ export class AuthService {
 
       if (!getUsers) throw Error('Maaf email anda belum terdaftar!');
 
-      const matched: boolean = await bcrypt.compare(params.password, getUsers.password);
-      if (!matched) throw new Error('Sorry password is not match');
+      // const matched: boolean = await bcrypt.compare(params.password, getUsers.password);
+      // if (!matched) throw new Error('Sorry password is not match');
 
       /** Generate access token */
       const accessToken = await signAccessToken(getUsers);

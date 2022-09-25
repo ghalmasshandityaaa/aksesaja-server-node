@@ -301,6 +301,8 @@ CREATE TABLE Organizer (
   CONSTRAINT slug_unique UNIQUE (slug),
 ); -- dev
 
+ALTER TABLE organizer ADD refresh_token text default null;
+
 CREATE TABLE organizer_categories (
   "category_id" varchar(36) NOT NULL PRIMARY KEY,
   "category_name" text not null,

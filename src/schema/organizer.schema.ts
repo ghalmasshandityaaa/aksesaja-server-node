@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { RegisterOrganizer, UpdateDetailOrganizer, UpdateOrganizer, UpdatePassword } from '../interfaces/organizer.interface';
+import { RegisterOrganizer, SignIn, UpdateDetailOrganizer, UpdateOrganizer, UpdatePassword } from '../interfaces/organizer.interface';
 import { checkValidate } from './index.schema';
 
 export const registerSchema = async (params: RegisterOrganizer) => {
@@ -177,6 +177,27 @@ export const checkOrganizerIdSchema = async (params: { organizerId: string }) =>
 };
 
 export const updateDetailInformationOrganizer = async (params: UpdateDetailOrganizer) => {
+  const schema = Joi.object({
+    organizerId: Joi.string()
+      .required()
+      .guid({
+        version: ['uuidv4'],
+      })
+      .messages({
+        'string.base': 'organizerId Id harus berupa string!',
+        'string.empty': 'organizerId Id tidak boleh kosong!',
+        'any.required': 'organizerId Id tidak boleh kosong!',
+        'string.guid': 'organizerId Id tidak valid!',
+      }),
+    detail: Joi.string().optional().messages({
+      'string.base': 'Organizer Name harus berupa string!',
+    }),
+  });
+
+  await checkValidate(schema, params);
+};
+
+export const signInSchema = async (params: SignIn) => {
   const schema = Joi.object({
     organizerId: Joi.string()
       .required()

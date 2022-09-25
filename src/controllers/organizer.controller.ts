@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { ResponseError, ResponseSuccess } from '../helpers/response.helper';
-import { RegisterOrganizer, UpdateDetailOrganizer, UpdateOrganizer, UpdatePassword } from '../interfaces/organizer.interface';
-import { checkOrganizerIdSchema, registerSchema, updateOrganizerSchema, updatePasswordSchema, updateDetailInformationOrganizer } from '../schema/organizer.schema';
+import { RegisterOrganizer, SignIn, UpdateDetailOrganizer, UpdateOrganizer, UpdatePassword } from '../interfaces/organizer.interface';
+import { checkOrganizerIdSchema, registerSchema, updateOrganizerSchema, updatePasswordSchema, updateDetailInformationOrganizer, signInSchema } from '../schema/organizer.schema';
 import { OrganizerService } from '../services/organizer.service';
 import { Auth } from '../interfaces/auth.interface';
 import { AuthRequest } from '../middlewares/authorization';
@@ -153,6 +153,23 @@ export class OrganizerController {
       ResponseSuccess(res, 200, result);
     } catch (e) {
       console.error({ service: 'OrganizerController.statsOrganizer', message: e.message, stack: e.stack });
+      ResponseError(res, 400, e);
+    }
+  }
+
+  static async signIn(req: AuthRequest, res: Response) {
+    const params: SignIn = req.body;
+    try {
+      /** Validate */
+      await signInSchema(params);
+
+      /** Logic Service */
+      const result = await OrganizerService.signIn(params);
+
+      /** Response */
+      ResponseSuccess(res, 200, result);
+    } catch (e) {
+      console.error({ service: 'OrganizerController.signIn', message: e.message, stack: e.stack });
       ResponseError(res, 400, e);
     }
   }

@@ -17,3 +17,8 @@ export interface Auth {
   userId: string;
   email: string;
 }
+
+export interface AuthOrganizer {
+  organizerId: string;
+  userId: string;
+}
