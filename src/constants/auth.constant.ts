@@ -4,12 +4,15 @@ import fs from 'fs';
 
 export const SECURE_COOKIES = process.env.NODE_ENV === 'production';
 export const SAME_SITE_COOKIES = SECURE_COOKIES ? 'none' : 'lax';
+export const DOMAIN_COOKIES: string = Config.get('APP_MODE') === 'localhost' ? 'localhost' : 'aksesaja.site';
+export const PATH_COOKIES: string = '/';
 export const COOKIES_OPTIONS: CookieOptions = {
   httpOnly: true,
   secure: SECURE_COOKIES,
   sameSite: SAME_SITE_COOKIES,
   maxAge: 1000 * 60 * 60 * 24 * 7,
-  domain: Config.get('APP_MODE') === 'localhost' ? 'localhost' : 'aksesaja.site',
+  domain: DOMAIN_COOKIES,
+  path: PATH_COOKIES,
 };
 
 export const PRIVATE_KEY = fs.readFileSync('./privateKey.pem', 'utf8');

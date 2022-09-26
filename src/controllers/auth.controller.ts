@@ -7,6 +7,7 @@ import { EmailSchema, SignInSchema, SignUpSchema, VerifyActivationCodeSchema } f
 import { ResponseError, ResponseSuccess } from '../helpers/response.helper';
 import { VerifyActivationCode } from '../interfaces/auth.interface';
 import { verifyRefreshToken, signAccessToken } from '../services/jwt.service';
+import { DOMAIN_COOKIES, PATH_COOKIES } from '../constants/auth.constant';
 
 export class AuthController {
   constructor() { }
@@ -134,7 +135,7 @@ export class AuthController {
     try {
       if (!cookie) throw Error('Cookie cannot be empty');
 
-      res.clearCookie(cookie);
+      res.clearCookie(cookie, { domain: DOMAIN_COOKIES, path: PATH_COOKIES });
       ResponseSuccess(res, 200, 'Cookie has been deleted');
     } catch (e) {
       console.error({ service: 'AuthController.destroyCookie', message: e.message, stack: e.stack });
@@ -156,14 +157,9 @@ export class AuthController {
     }
   }
 
-  static async logout(req: Request, res: Response) {
-    const cookies: any = req.cookies;
+  static async logout(_req: Request, res: Response) {
     try {
-      const arraysOfCookies: any[] = Object.keys(cookies);
-      for (let i: number = 0; i < arraysOfCookies.length; i++) {
-        console.log(i, arraysOfCookies[i])
-        res.clearCookie(arraysOfCookies[i]);
-      }
+      res.clearCookie('refreshToken', { domain: DOMAIN_COOKIES, path: PATH_COOKIES });
 
       ResponseSuccess(res, 200, 'Logout success');
     } catch (e) {
