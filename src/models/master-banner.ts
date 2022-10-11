@@ -11,7 +11,7 @@ export class MasterBanner extends BaseEntity {
   @Column({ name: 'position' })
   position: string;
 
-  @Column({ name: 'file_addres' })
+  @Column({ name: 'file_address' })
   fileAddress: string;
 
   @Column({ name: 'url_link' })

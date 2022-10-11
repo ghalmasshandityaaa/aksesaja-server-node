@@ -19,6 +19,15 @@ CREATE TABLE Users (
 	"updated_by" text default NULL
 ); -- dev
 
+/** User untuk login maupun session */
+CREATE TABLE access_token (
+  id text NOT NULL PRIMARY KEY,
+  "user_id" text NOT NULL unique,
+  token text NOT NULL unique,
+	"expired_at" timestamp NOT NULL,
+	"created_at" timestamp NOT NULL,
+); -- dev
+
 ALTER TABLE users ADD refresh_token text default null;
 
 alter table users alter column full_name set default null; -- dev
